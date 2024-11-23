@@ -4,13 +4,14 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
 
 public class TestingSelenium{
     private WebDriver driver;
     @BeforeEach
     void setUp(){
-        WebDriverManager.chromedriver().setup();
-        driver = new ChromeDriver();
+        WebDriverManager.firefoxdriver().setup();
+        driver = new FirefoxDriver();
     }
     @AfterEach
     void tearDown(){
@@ -19,10 +20,7 @@ public class TestingSelenium{
     @Test
     @DisplayName("Should open and close chrome browser using Manager")
     void shouldOpenAndCloseChromeBrowserUsingManager() throws InterruptedException {
-        WebDriverManager.chromedriver().setup(); //sets up a valid driver for Chrome.
-// WebDriverManager.operadriver().setup(); // do the same for Opera browser
-        WebDriver driver = new ChromeDriver();
-        driver.get("https://www.google.com");
+        driver.get("http://devhub.dev.br/");
         Thread.sleep(1000);
         driver.quit();
     }
