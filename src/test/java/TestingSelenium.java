@@ -15,6 +15,8 @@ public class TestingSelenium{
     void setUp(){
         WebDriverManager.firefoxdriver().setup();
         driver = new FirefoxDriver();
+        driver.get("http://devhub.dev.br/");
+        //criar fluentWaiterCertainPage(driver, pagina);
     }
     @AfterEach
     void tearDown(){
