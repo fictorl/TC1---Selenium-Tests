@@ -4,6 +4,10 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.support.ui.FluentWait;
+
+import java.time.Duration;
+import java.util.function.Function;
 
 public class TestingSelenium{
     private WebDriver driver;
@@ -21,6 +25,22 @@ public class TestingSelenium{
         final WebElement searchButton = driver.findElement(By.xpath("/html/body/main/article/div/div[1]/form/a"));
         searchButton.click();
     }
+
+
+
+    public void fluentWaiterCertainPage(WebDriver driver, String title) {
+        new FluentWait<>(driver)
+                .withTimeout(Duration.ofSeconds(10)) // tempo máximo de espera
+                .pollingEvery(Duration.ofMillis(700)) // frequência de verificação
+                .ignoring(Exception.class) // ignorar exceções durante a verificação
+                .until(new Function<WebDriver, Boolean>() {
+                    @Override
+                    public Boolean apply(WebDriver driver) {
+                        return title.equals(driver.getTitle());
+                    }
+                });
+    }
+
 
     @Test
     @DisplayName("Should open and close chrome browser using Manager")
