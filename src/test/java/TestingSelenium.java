@@ -16,7 +16,7 @@ public class TestingSelenium{
         WebDriverManager.firefoxdriver().setup();
         driver = new FirefoxDriver();
         driver.get("http://devhub.dev.br/");
-        //criar fluentWaiterCertainPage(driver, pagina);
+        fluentWaiterCertainPage(driver, "Pessoas");
     }
     @AfterEach
     void tearDown(){
@@ -28,6 +28,11 @@ public class TestingSelenium{
         searchButton.click();
     }
 
+    void goToMainPage() {
+        final WebElement searchButton = driver.findElement(By.xpath("/html/body/main/a/img"));
+        searchButton.click();
+        fluentWaiterCertainPage(driver, "Pessoas");
+    }
 
 
     public void fluentWaiterCertainPage(WebDriver driver, String title) {
