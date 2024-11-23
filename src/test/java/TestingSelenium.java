@@ -48,6 +48,29 @@ public class TestingSelenium{
                 });
     }
 
+    public void verifyToastMessage(WebDriver driver, String expectedMessage) {
+        // Aguarda até que o toast apareça
+        WebElement toast = new FluentWait<>(driver)
+                .withTimeout(Duration.ofSeconds(10)) // tempo máximo de espera
+                .pollingEvery(Duration.ofMillis(700)) // frequência de verificação
+                .ignoring(Exception.class) // ignora exceções durante a verificação
+                .until(new Function<WebDriver, WebElement>() {
+                    @Override
+                    public WebElement apply(WebDriver driver) {
+                        // Localiza o elemento do toast
+                        WebElement toastElement = driver.findElement(By.xpath("/html/body/div[@class='notificacao']/p"));
+                        if (toastElement.isDisplayed()) {
+                            return toastElement;
+                        }
+                        return null;
+                    }
+                });
+
+        // Verifica o texto do toast
+        String actualMessage = toast.getText();
+        Assertions.assertEquals(actualMessage, expectedMessage);
+    }
+
 
     @Test
     @DisplayName("Should open and close chrome browser using Manager")
