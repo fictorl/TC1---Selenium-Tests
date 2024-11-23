@@ -3,7 +3,6 @@ import org.junit.jupiter.api.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
 public class TestingSelenium{
@@ -17,6 +16,12 @@ public class TestingSelenium{
     void tearDown(){
         driver.quit();
     }
+
+    void goToRegistrationPage(){
+        final WebElement searchButton = driver.findElement(By.xpath("/html/body/main/article/div/div[1]/form/a"));
+        searchButton.click();
+    }
+
     @Test
     @DisplayName("Should open and close chrome browser using Manager")
     void shouldOpenAndCloseChromeBrowserUsingManager() throws InterruptedException {
