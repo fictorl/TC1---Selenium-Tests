@@ -71,6 +71,18 @@ public class TestingSelenium{
         Assertions.assertEquals(actualMessage, expectedMessage);
     }
 
+    public void registerPerson(WebDriver driver, String cpf, String nome, String rua, String numero, String cep, String dataNasc, String profissao) {
+        fluentWaiterCertainPage(driver, "Adicionar Pessoa");
+        driver.findElement(By.id("iCpf")).sendKeys(cpf);
+        driver.findElement(By.id("iNome")).sendKeys(nome);
+        driver.findElement(By.id("iRua")).sendKeys(rua);
+        driver.findElement(By.id("iNumero")).sendKeys(numero);
+        driver.findElement(By.id("iCep")).sendKeys(cep);
+        driver.findElement(By.id("iDataNasc")).sendKeys(dataNasc);
+        driver.findElement(By.id("iProfissao")).sendKeys(profissao);
+        driver.findElement(By.id("cadastrarPessoa")).click();
+    }
+
 
     @Test
     @DisplayName("Should open and close chrome browser using Manager")
@@ -90,6 +102,47 @@ public class TestingSelenium{
         System.out.println(driver.findElement(By.xpath("/html/body/main/header/h1")));
         System.out.println("Deu certo");
         driver.quit();
+    }
+
+
+    @Nested
+    @DisplayName("Inputs tests")
+    class InputsTests {
+
+        @Test
+        @DisplayName("Testing CPF input format")
+        void testingCpfInputFormat() throws InterruptedException {
+            goToRegistrationPage();
+            String name = "João Silva";
+            registerPerson(driver,
+                    "123",
+                    name,
+                    "Rua das Flores",
+                    "123",
+                    "12345-678",
+                    "2000-12-31",
+                    "Engenheiro" );
+            String expectedMessage = "Formato correto: 123.456.789-10";
+            verifyToastMessage(driver, expectedMessage);
+        }
+
+        /*
+        @Test
+        @DisplayName("Testing CPF input empty string")
+        void testingCpfInputNull() throws InterruptedException {
+            goToRegistrationPage();
+            String name = "João Silva";
+            registerPerson(driver,
+                    "123",
+                    name,
+                    "Rua das Flores",
+                    "123",
+                    "12345-678",
+                    "2000-12-31",
+                    "Engenheiro" );
+            // pensar como fazer verificão
+        }
+        */
     }
 }
 
