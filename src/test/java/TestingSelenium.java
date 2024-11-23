@@ -49,4 +49,17 @@ public class TestingSelenium{
         Thread.sleep(1000);
         driver.quit();
     }
+
+    @Test
+    @DisplayName("Should open and close chrome browser using Manager")
+    void basicTest() throws InterruptedException {
+        driver.get("http://devhub.dev.br/");
+        fluentWaiterCertainPage(driver, "Pessoas");
+        goToRegistrationPage();
+        fluentWaiterCertainPage(driver, "Adicionar Pessoa");
+        System.out.println(driver.findElement(By.xpath("/html/body/main/header/h1")));
+        System.out.println("Deu certo");
+        driver.quit();
+    }
 }
+
