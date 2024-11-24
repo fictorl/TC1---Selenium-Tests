@@ -182,6 +182,25 @@ public class TestingSelenium{
             Assertions.assertEquals("Preencha este campo.", validationMessage, "O campo 'Rua' deve exibir a mensagem 'Preencha este campo'.");
         }
 
+        @Test
+        @DisplayName("Should not submit the form if the 'Número' field is empty")
+        void shouldNotSubmitIfNumeroIsEmpty() throws InterruptedException {
+            goToRegistrationPage();
+
+            registerPerson(driver,
+                    "12345678901",
+                    "João Silva",
+                    "Rua das Flores",
+                    "",
+                    "12345-678",
+                    "2000-12-31",
+                    "Engenheiro" );
+
+            WebElement numeroField = driver.findElement(By.id("iNumero"));
+            String validationMessage = numeroField.getAttribute("validationMessage");
+            Assertions.assertEquals("Preencha este campo.", validationMessage, "O campo 'Número' deve exibir a mensagem 'Preencha este campo'.");
+        }
+
     }
 }
 
