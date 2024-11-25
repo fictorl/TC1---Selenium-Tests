@@ -129,188 +129,200 @@ public class TestingSelenium{
     @Nested
     @DisplayName("Inputs tests")
     class InputsTests {
+        
+        @Nested
+        @DisplayName("CPF input tests")
+        class cpfInputTests{
+            @Test
+            @DisplayName("Testing when CPF input doesn´t follow the correct format")
+            void testingCpfInputFormat() throws InterruptedException {
+                goToRegistrationPage();
+                String name = "João Silva";
+                registerPerson(driver,
+                        "123",
+                        name,
+                        "Rua das Flores",
+                        "123",
+                        "12345-678",
+                        "2000-12-31",
+                        "Engenheiro" );
+                String expectedMessage = "Formato correto: 123.456.789-10";
+                verifyToastMessage(driver, expectedMessage);
+            }
 
-        @Test
-        @DisplayName("Testing when CPF input doesn´t follow the correct format")
-        void testingCpfInputFormat() throws InterruptedException {
-            goToRegistrationPage();
-            String name = "João Silva";
-            registerPerson(driver,
-                    "123",
-                    name,
-                    "Rua das Flores",
-                    "123",
-                    "12345-678",
-                    "2000-12-31",
-                    "Engenheiro" );
-            String expectedMessage = "Formato correto: 123.456.789-10";
-            verifyToastMessage(driver, expectedMessage);
+            @Test
+            @DisplayName("Testing when CPF follow the correct format")
+            void testingWhenCpfFollowTheCorrectFormat() {
+                goToRegistrationPage();
+                String name = "João Silva";
+                registerPerson(driver,
+                        "123.456.789-10",
+                        name,
+                        "Rua das Flores",
+                        "123",
+                        "12345-678",
+                        "2000-12-31",
+                        "Engenheiro" );
+                String expectedMessage = name + " adicionado com sucesso!";
+                verifyToastMessage(driver, expectedMessage);
+            }        
         }
 
-        @Test
-        @DisplayName("Testing when CPF follow the correct format")
-        void testingWhenCpfFollowTheCorrectFormat() {
-            goToRegistrationPage();
-            String name = "João Silva";
-            registerPerson(driver,
-                    "123.456.789-10",
-                    name,
-                    "Rua das Flores",
-                    "123",
-                    "12345-678",
-                    "2000-12-31",
-                    "Engenheiro" );
-            String expectedMessage = name + " adicionado com sucesso!";
-            verifyToastMessage(driver, expectedMessage);
+        
+
+
+        @Nested
+        @DisplayName("Nested class name")
+        class nestedClassName{
+            @Test
+            @DisplayName("Testing Profissao input when it is filed with special characters")
+            void testingProfissaoInputFormat() throws InterruptedException {
+                goToRegistrationPage();
+                String name = "João Silva";
+                registerPerson(driver,
+                        "123.123.123-15",
+                        name,
+                        "Rua das Flores",
+                        "123",
+                        "12345-678",
+                        "2000-12-31",
+                        "#@123" );
+                String successedRegistration = name + " adicionado com sucesso!";
+                verifyIfToastMessageIsDiferentThen(successedRegistration, driver);
+            }
+
+            @Test
+            @DisplayName("Testing Profissao input when it is empty")
+            void testingProfissaoInputWhenItIsEmpty() {
+                goToRegistrationPage();
+                String name = "João Silva";
+                registerPerson(driver,
+                        "123.123.123-15",
+                        name,
+                        "Rua das Flores",
+                        "123",
+                        "12345-678",
+                        "2000-12-31",
+                        "" );
+                WebElement nomeField = driver.findElement(By.id("iProfissao"));
+                String validationMessage = nomeField.getAttribute("validationMessage");
+                Assertions.assertEquals("Preencha este campo.", validationMessage, "O campo 'Nome' deve exibir a mensagem 'Preencha este campo'.");
+            }        
         }
 
+        @Nested
+        @DisplayName("Tests Nome input")
+        class testsNomeInput{
+            @Test
+            @DisplayName("Should not submit the form if the 'Nome' field is empty")
+            void shouldNotSubmitIfNomeIsEmpty() throws InterruptedException {
+                goToRegistrationPage();
 
+                registerPerson(driver,
+                        "12345678901",
+                        "",
+                        "Rua das Flores",
+                        "123",
+                        "12345-678",
+                        "2000-12-31",
+                        "Engenheiro" );
 
-        @Test
-        @DisplayName("Testing Profissao input when it is filed with special characters")
-        void testingProfissaoInputFormat() throws InterruptedException {
-            goToRegistrationPage();
-            String name = "João Silva";
-            registerPerson(driver,
-                    "123.123.123-15",
-                    name,
-                    "Rua das Flores",
-                    "123",
-                    "12345-678",
-                    "2000-12-31",
-                    "#@123" );
-            String successedRegistration = name + " adicionado com sucesso!";
-            verifyIfToastMessageIsDiferentThen(successedRegistration, driver);
+                WebElement nomeField = driver.findElement(By.id("iNome"));
+                String validationMessage = nomeField.getAttribute("validationMessage");
+                Assertions.assertEquals("Preencha este campo.", validationMessage, "O campo 'Nome' deve exibir a mensagem 'Preencha este campo'.");
+            }        
         }
+        
 
-        @Test
-        @DisplayName("Testing Profissao input when it is empty")
-        void testingProfissaoInputWhenItIsEmpty() {
-            goToRegistrationPage();
-            String name = "João Silva";
-            registerPerson(driver,
-                    "123.123.123-15",
-                    name,
-                    "Rua das Flores",
-                    "123",
-                    "12345-678",
-                    "2000-12-31",
-                    "" );
-            WebElement nomeField = driver.findElement(By.id("iProfissao"));
-            String validationMessage = nomeField.getAttribute("validationMessage");
-            Assertions.assertEquals("Preencha este campo.", validationMessage, "O campo 'Nome' deve exibir a mensagem 'Preencha este campo'.");
+        @Nested
+        @DisplayName("Tests Rua input")
+        class testsRuaInput{
+            @Test
+            @DisplayName("Should not submit the form if the 'Rua' field is empty")
+            void shouldNotSubmitIfRuaIsEmpty() throws InterruptedException {
+                goToRegistrationPage();
+
+                registerPerson(driver,
+                        "12345678901",
+                        "João Silva",
+                        "",
+                        "123",
+                        "12345-678",
+                        "2000-12-31",
+                        "Engenheiro" );
+
+                WebElement ruaField = driver.findElement(By.id("iRua"));
+                String validationMessage = ruaField.getAttribute("validationMessage");
+                Assertions.assertEquals("Preencha este campo.", validationMessage, "O campo 'Rua' deve exibir a mensagem 'Preencha este campo'.");
+            }        
         }
+        
 
-        /*
-        @Test
-        @DisplayName("Testing CPF input empty string")
-        void testingCpfInputNull() throws InterruptedException {
-            goToRegistrationPage();
-            String name = "João Silva";
-            registerPerson(driver,
-                    "123",
-                    name,
-                    "Rua das Flores",
-                    "123",
-                    "12345-678",
-                    "2000-12-31",
-                    "Engenheiro" );
-            // pensar como fazer verificão
+        @Nested
+        @DisplayName("Tests Numero input")
+        class testsNumeroInput{
+
+            @Test
+            @DisplayName("Should not submit the form if the 'Número' field is empty")
+            void shouldNotSubmitIfNumeroIsEmpty() throws InterruptedException {
+                goToRegistrationPage();
+
+                registerPerson(driver,
+                        "12345678901",
+                        "João Silva",
+                        "Rua das Flores",
+                        "",
+                        "12345-678",
+                        "2000-12-31",
+                        "Engenheiro" );
+
+                WebElement numeroField = driver.findElement(By.id("iNumero"));
+                String validationMessage = numeroField.getAttribute("validationMessage");
+                Assertions.assertEquals("Preencha este campo.", validationMessage, "O campo 'Número' deve exibir a mensagem 'Preencha este campo'.");
+            }
         }
-        */
-
-        @Test
-        @DisplayName("Should not submit the form if the 'Nome' field is empty")
-        void shouldNotSubmitIfNomeIsEmpty() throws InterruptedException {
-            goToRegistrationPage();
-
-            registerPerson(driver,
-                    "12345678901",
-                    "",
-                    "Rua das Flores",
-                    "123",
-                    "12345-678",
-                    "2000-12-31",
-                    "Engenheiro" );
-
-            WebElement nomeField = driver.findElement(By.id("iNome"));
-            String validationMessage = nomeField.getAttribute("validationMessage");
-            Assertions.assertEquals("Preencha este campo.", validationMessage, "O campo 'Nome' deve exibir a mensagem 'Preencha este campo'.");
-        }
-
-        @Test
-        @DisplayName("Should not submit the form if the 'Rua' field is empty")
-        void shouldNotSubmitIfRuaIsEmpty() throws InterruptedException {
-            goToRegistrationPage();
-
-            registerPerson(driver,
-                    "12345678901",
-                    "João Silva",
-                    "",
-                    "123",
-                    "12345-678",
-                    "2000-12-31",
-                    "Engenheiro" );
-
-            WebElement ruaField = driver.findElement(By.id("iRua"));
-            String validationMessage = ruaField.getAttribute("validationMessage");
-            Assertions.assertEquals("Preencha este campo.", validationMessage, "O campo 'Rua' deve exibir a mensagem 'Preencha este campo'.");
-        }
-
-        @Test
-        @DisplayName("Should not submit the form if the 'Número' field is empty")
-        void shouldNotSubmitIfNumeroIsEmpty() throws InterruptedException {
-            goToRegistrationPage();
-
-            registerPerson(driver,
-                    "12345678901",
-                    "João Silva",
-                    "Rua das Flores",
-                    "",
-                    "12345-678",
-                    "2000-12-31",
-                    "Engenheiro" );
-
-            WebElement numeroField = driver.findElement(By.id("iNumero"));
-            String validationMessage = numeroField.getAttribute("validationMessage");
-            Assertions.assertEquals("Preencha este campo.", validationMessage, "O campo 'Número' deve exibir a mensagem 'Preencha este campo'.");
-        }
+        
     }
 
     @Nested
     @DisplayName("CRUD Tests")
     class CrudTest {
-        @Test
-        @DisplayName("Should not allow registering two people with the same CPF")
-        void shouldNotAllowDuplicateCpfRegistration() throws InterruptedException {
-            goToRegistrationPage();
+        
+        @Nested
+        @DisplayName("Creation Tests")
+        class creationTests{
 
-            String cpf = "123.456.789-01";
-            registerPerson(driver,
-                    cpf,
-                    "Maria José",
-                    "Rua das Flores",
-                    "123",
-                    "12345-678",
-                    "2000-12-31",
-                    "Engenheiro" );
+            @Test
+            @DisplayName("Should not allow registering two people with the same CPF")
+            void shouldNotAllowDuplicateCpfRegistration() throws InterruptedException {
+                goToRegistrationPage();
 
-            goToMainPage();
-            goToRegistrationPage();
+                String cpf = "123.456.789-01";
+                registerPerson(driver,
+                        cpf,
+                        "Maria José",
+                        "Rua das Flores",
+                        "123",
+                        "12345-678",
+                        "2000-12-31",
+                        "Engenheiro" );
 
-            registerPerson(driver,
-                    cpf,
-                    "João Silva",
-                    "Rua das Palmeiras",
-                    "456",
-                    "98765-432",
-                    "1995-05-15",
-                    "Médico" );
+                goToMainPage();
+                goToRegistrationPage();
 
-            String expectedMessageTwo = "O CPF 123.456.789-01 ja foi cadastrado!";
-            verifyToastMessage(driver, expectedMessageTwo);
+                registerPerson(driver,
+                        cpf,
+                        "João Silva",
+                        "Rua das Palmeiras",
+                        "456",
+                        "98765-432",
+                        "1995-05-15",
+                        "Médico" );
+
+                String expectedMessageTwo = "O CPF 123.456.789-01 ja foi cadastrado!";
+                verifyToastMessage(driver, expectedMessageTwo);
+            }
         }
-
     }
 
 }
