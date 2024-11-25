@@ -164,6 +164,25 @@ public class TestingSelenium{
             verifyToastMessage(driver, expectedMessage);
         }
 
+
+
+        @Test
+        @DisplayName("Testing Profissao input when it is filed with special characters")
+        void testingProfissaoInputFormat() throws InterruptedException {
+            goToRegistrationPage();
+            String name = "João Silva";
+            registerPerson(driver,
+                    "123.123.123-15",
+                    name,
+                    "Rua das Flores",
+                    "123",
+                    "12345-678",
+                    "2000-12-31",
+                    "#@123" );
+            String successedRegistration = name + " adicionado com sucesso!";
+            verifyIfToastMessageIsDiferentThen(successedRegistration, driver);
+        }g
+
         /*
         @Test
         @DisplayName("Testing CPF input empty string")
