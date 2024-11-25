@@ -10,6 +10,8 @@ import org.openqa.selenium.support.ui.FluentWait;
 import java.time.Duration;
 import java.util.function.Function;
 
+import static org.junit.jupiter.api.Assertions.fail;
+
 public class TestingSelenium{
     private WebDriver driver;
     @BeforeEach
@@ -111,7 +113,7 @@ public class TestingSelenium{
     class InputsTests {
 
         @Test
-        @DisplayName("Testing CPF input format")
+        @DisplayName("Testing when CPF input doesn´t follow the correct format")
         void testingCpfInputFormat() throws InterruptedException {
             goToRegistrationPage();
             String name = "João Silva";
@@ -124,6 +126,23 @@ public class TestingSelenium{
                     "2000-12-31",
                     "Engenheiro" );
             String expectedMessage = "Formato correto: 123.456.789-10";
+            verifyToastMessage(driver, expectedMessage);
+        }
+
+        @Test
+        @DisplayName("Testing when CPF follow the correct format")
+        void testingWhenCpfFollowTheCorrectFormat() {
+            goToRegistrationPage();
+            String name = "João Silva";
+            registerPerson(driver,
+                    "123.456.789-10",
+                    name,
+                    "Rua das Flores",
+                    "123",
+                    "12345-678",
+                    "2000-12-31",
+                    "Engenheiro" );
+            String expectedMessage = name + " adicionado com sucesso!";
             verifyToastMessage(driver, expectedMessage);
         }
 
