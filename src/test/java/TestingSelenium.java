@@ -183,6 +183,24 @@ public class TestingSelenium{
             verifyIfToastMessageIsDiferentThen(successedRegistration, driver);
         }
 
+        @Test
+        @DisplayName("Testing Profissao input when it is empty")
+        void testingProfissaoInputWhenItIsEmpty() {
+            goToRegistrationPage();
+            String name = "João Silva";
+            registerPerson(driver,
+                    "123.123.123-15",
+                    name,
+                    "Rua das Flores",
+                    "123",
+                    "12345-678",
+                    "2000-12-31",
+                    "" );
+            WebElement nomeField = driver.findElement(By.id("iProfissao"));
+            String validationMessage = nomeField.getAttribute("validationMessage");
+            Assertions.assertEquals("Preencha este campo.", validationMessage, "O campo 'Nome' deve exibir a mensagem 'Preencha este campo'.");
+        }
+
         /*
         @Test
         @DisplayName("Testing CPF input empty string")
