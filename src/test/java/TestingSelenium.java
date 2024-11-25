@@ -1,6 +1,7 @@
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -200,7 +201,43 @@ public class TestingSelenium{
             String validationMessage = numeroField.getAttribute("validationMessage");
             Assertions.assertEquals("Preencha este campo.", validationMessage, "O campo 'Número' deve exibir a mensagem 'Preencha este campo'.");
         }
+    }
+
+    @Nested
+    @DisplayName("CRUD Tests")
+    class CrudTest {
+        @Test
+        @DisplayName("Should not allow registering two people with the same CPF")
+        void shouldNotAllowDuplicateCpfRegistration() throws InterruptedException {
+            goToRegistrationPage();
+
+            String cpf = "123.456.789-01";
+            registerPerson(driver,
+                    cpf,
+                    "Maria José",
+                    "Rua das Flores",
+                    "123",
+                    "12345-678",
+                    "2000-12-31",
+                    "Engenheiro" );
+
+            goToMainPage();
+            goToRegistrationPage();
+
+            registerPerson(driver,
+                    cpf,
+                    "João Silva",
+                    "Rua das Palmeiras",
+                    "456",
+                    "98765-432",
+                    "1995-05-15",
+                    "Médico" );
+
+            String expectedMessageTwo = "O CPF 123.456.789-01 ja foi cadastrado!";
+            verifyToastMessage(driver, expectedMessageTwo);
+        }
 
     }
+
 }
 
