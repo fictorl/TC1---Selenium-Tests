@@ -74,6 +74,24 @@ public class TestingSelenium{
         Assertions.assertEquals(actualMessage, expectedMessage);
     }
 
+
+    public void verifyIfToastMessageIsDiferentThen(String stringNotExpected, WebDriver driver) {
+        WebElement toast = new FluentWait<>(driver)
+                .withTimeout(Duration.ofSeconds(10))
+                .pollingEvery(Duration.ofMillis(700))
+                .ignoring(Exception.class)
+                .until(new Function<WebDriver, WebElement>() {
+                           @Override
+                           public WebElement apply(WebDriver webDriver) {
+                               WebElement toastElement = driver.findElement((By.xpath("/html/body/div[@class='notificacao']/p")));
+                               if (toastElement.isDisplayed()) return toastElement;
+                               return null;
+                           }
+                       }
+                );
+        Assertions.assertNotEquals(stringNotExpected, toast.getText());
+    }
+
     public void registerPerson(WebDriver driver, String cpf, String nome, String rua, String numero, String cep, String dataNasc, String profissao) {
         fluentWaiterCertainPage(driver, "Adicionar Pessoa");
         driver.findElement(By.id("iCpf")).sendKeys(cpf);
