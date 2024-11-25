@@ -181,7 +181,7 @@ public class TestingSelenium{
                     "#@123" );
             String successedRegistration = name + " adicionado com sucesso!";
             verifyIfToastMessageIsDiferentThen(successedRegistration, driver);
-        }g
+        }
 
         /*
         @Test
