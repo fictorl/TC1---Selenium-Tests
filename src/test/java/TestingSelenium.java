@@ -281,7 +281,29 @@ public class TestingSelenium{
                 Assertions.assertEquals("Preencha este campo.", validationMessage, "O campo 'Número' deve exibir a mensagem 'Preencha este campo'.");
             }
         }
-        
+
+        @Nested
+        @DisplayName("Nested CEP inputs")
+        class testsCEPInputs{
+            @Test
+            @DisplayName("Should not submit form if the CEP field is empty")
+            void shouldNotSubmitFormIfTheCEPFieldIsEmpty(){
+                goToRegistrationPage();
+
+                registerPerson(driver,
+                        "12345678901",
+                        "Marcao Pescador",
+                        "Rua Eugenio Franco",
+                        "283",
+                        "",
+                        "1970-12-06",
+                        "Pedreiro");
+
+                WebElement CEPField = driver.findElement(By.id("iCEP"));
+                String validationMessage = CEPField.getAttribute("validationMessage");
+                Assertions.assertEquals("Preencha este campo.", validationMessage, "O campo 'CEP' deve exibir 'Preencha este campo'.");
+            }
+        }
     }
 
     @Nested
