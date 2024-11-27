@@ -5,7 +5,9 @@ import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
 import java.util.function.Function;
@@ -309,10 +311,10 @@ public class TestingSelenium{
     @Nested
     @DisplayName("CRUD Tests")
     class CrudTest {
-        
+
         @Nested
         @DisplayName("Creation Tests")
-        class creationTests{
+        class creationTests {
 
             @Test
             @DisplayName("Should not allow registering two people with the same CPF")
@@ -327,7 +329,7 @@ public class TestingSelenium{
                         "123",
                         "12345-678",
                         "2000-12-31",
-                        "Engenheiro" );
+                        "Engenheiro");
 
                 goToMainPage();
                 goToRegistrationPage();
@@ -339,13 +341,41 @@ public class TestingSelenium{
                         "456",
                         "98765-432",
                         "1995-05-15",
-                        "Médico" );
+                        "Médico");
 
                 String expectedMessageTwo = "O CPF 123.456.789-01 ja foi cadastrado!";
                 verifyToastMessage(driver, expectedMessageTwo);
             }
         }
-    }
 
+        @Nested
+        @DisplayName("Editing  Tests")
+        class editingTests {
+            @Test
+            @DisplayName("Should not allow editing the CPF field")
+            void shouldNotAllowEditingCpfField() throws InterruptedException {
+                goToRegistrationPage();
+
+                String cpf = "123.456.789-02";
+                registerPerson(driver,
+                        cpf,
+                        "Antonia Francisca",
+                        "Rua das Flores",
+                        "123",
+                        "12345-678",
+                        "2000-12-31",
+                        "Desenvolvedora de software");
+
+                goToMainPage();
+                WebElement editButton = driver.findElement(By.id(cpf));
+                editButton.click();
+                fluentWaiterCertainPage(driver, "Adicionar Pessoa");
+
+                WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+                WebElement cpfField = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("iCpf")));
+                Assertions.assertFalse(cpfField.isEnabled());
+            }
+        }
+    }
 }
 
