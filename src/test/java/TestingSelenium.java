@@ -5,7 +5,9 @@ import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
 import java.util.function.Function;
@@ -19,7 +21,7 @@ public class TestingSelenium{
         WebDriverManager.firefoxdriver().setup();
         driver = new FirefoxDriver();
         driver.get("http://devhub.dev.br/");
-        fluentWaiterCertainPage(driver, "Pessoas");
+        fluentWaiterCertainPage(driver, "DevHub");
     }
     @AfterEach
     void tearDown(){
@@ -34,7 +36,7 @@ public class TestingSelenium{
     void goToMainPage() {
         final WebElement searchButton = driver.findElement(By.xpath("/html/body/main/a/img"));
         searchButton.click();
-        fluentWaiterCertainPage(driver, "Pessoas");
+        fluentWaiterCertainPage(driver, "DevHub");
     }
 
 
@@ -46,7 +48,7 @@ public class TestingSelenium{
                 .until(new Function<WebDriver, Boolean>() {
                     @Override
                     public Boolean apply(WebDriver driver) {
-                        return title.equals(driver.getTitle());
+                        return title.equals(driver.findElement(By.tagName("h1")).getText());
                     }
                 });
     }
@@ -93,7 +95,7 @@ public class TestingSelenium{
     }
 
     public void registerPerson(WebDriver driver, String cpf, String nome, String rua, String numero, String cep, String dataNasc, String profissao) {
-        fluentWaiterCertainPage(driver, "Adicionar Pessoa");
+        fluentWaiterCertainPage(driver, "Cadastrar Pessoa");
         driver.findElement(By.id("iCpf")).sendKeys(cpf);
         driver.findElement(By.id("iNome")).sendKeys(nome);
         driver.findElement(By.id("iRua")).sendKeys(rua);
@@ -117,9 +119,9 @@ public class TestingSelenium{
     @DisplayName("Should open and close chrome browser using Manager")
     void basicTest() throws InterruptedException {
         driver.get("http://devhub.dev.br/");
-        fluentWaiterCertainPage(driver, "Pessoas");
+        fluentWaiterCertainPage(driver, "DevHub");
         goToRegistrationPage();
-        fluentWaiterCertainPage(driver, "Adicionar Pessoa");
+        fluentWaiterCertainPage(driver, "Cadastrar Pessoa");
         System.out.println(driver.findElement(By.xpath("/html/body/main/header/h1")));
         System.out.println("Deu certo");
         driver.quit();
@@ -172,8 +174,8 @@ public class TestingSelenium{
 
 
         @Nested
-        @DisplayName("Nested class name")
-        class nestedClassName{
+        @DisplayName("Profissao input tests")
+        class profissaoInputTests{
             @Test
             @DisplayName("Testing Profissao input when it is filed with special characters")
             void testingProfissaoInputFormat() throws InterruptedException {
