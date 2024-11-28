@@ -439,6 +439,41 @@ public class TestingSelenium{
                 Assertions.assertEquals("Preencha este campo.", profissaoValidationMessage, "O campo 'Profissão' deve exibir a mensagem 'Preencha este campo'.");
             }
 
+            @Test
+            @DisplayName("Should not allow editing a person with a future birth date")
+            void shouldNotAllowEditingWithFutureBirthDate() throws InterruptedException {
+
+                goToRegistrationPage();
+
+                String cpf = "123.456.789-02";
+                String nome = "Antonia Francisca";
+                String initialBirthDate = "2000-12-31";
+                registerPerson(driver,
+                        cpf,
+                        nome,
+                        "Rua das Flores",
+                        "123",
+                        "12345-678",
+                        initialBirthDate,
+                        "Desenvolvedora de software");
+
+                goToMainPage();
+                WebElement editButton = driver.findElement(By.id(cpf));
+                editButton.click();
+                fluentWaiterCertainPage(driver, "Adicionar Pessoa");
+
+                String futureDate = "2100-01-01";
+                WebElement birthDateField = driver.findElement(By.id("iDataNasc"));
+                birthDateField.clear();
+                birthDateField.sendKeys(futureDate);
+                driver.findElement(By.id("cadastrarPessoa")).click();
+
+                goToMainPage();
+                WebElement birthDateFieldOnMainPage = driver.findElement(By.id("iDataNasc"));
+                String displayedBirthDate = birthDateFieldOnMainPage.getAttribute("value");
+
+                Assertions.assertNotEquals(futureDate, displayedBirthDate, "A data de nascimento não deve ser editada para uma data futura!");
+            }
 
         }
     }
