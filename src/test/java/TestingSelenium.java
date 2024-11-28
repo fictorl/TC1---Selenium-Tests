@@ -290,20 +290,38 @@ public class TestingSelenium{
             @Test
             @DisplayName("Should not submit form if the CEP field is empty")
             void shouldNotSubmitFormIfTheCEPFieldIsEmpty(){
+                    goToRegistrationPage();
+
+                    registerPerson(driver,
+                            "123.456.789-01",
+                            "Marcao Pescador",
+                            "Rua Eugenio Franco",
+                            "283",
+                            "",
+                            "1970-12-06",
+                            "Pedreiro");
+
+                    WebElement CEPField = driver.findElement(By.id("iCEP"));
+                    String validationMessage = CEPField.getAttribute("validationMessage");
+                    Assertions.assertEquals("Preencha este campo.", validationMessage, "O campo 'CEP' deve exibir 'Preencha este campo'.");
+                }
+
+            @Test
+            @DisplayName("Should not submit form if the CEP field is in wrong format")
+            void shouldNotSubmitFormIfTheCEPFieldIsInWrongFormat(){
                 goToRegistrationPage();
 
                 registerPerson(driver,
-                        "12345678901",
+                        "123.456.789-01",
                         "Marcao Pescador",
                         "Rua Eugenio Franco",
                         "283",
-                        "",
+                        "?0%0000..00#0000000@00!!0",
                         "1970-12-06",
                         "Pedreiro");
 
-                WebElement CEPField = driver.findElement(By.id("iCEP"));
-                String validationMessage = CEPField.getAttribute("validationMessage");
-                Assertions.assertEquals("Preencha este campo.", validationMessage, "O campo 'CEP' deve exibir 'Preencha este campo'.");
+                String successedRegistration = "Formato de CEP inválido!";
+                verifyIfToastMessageIsDiferentThen(successedRegistration, driver);
             }
         }
     }
