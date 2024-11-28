@@ -8,11 +8,9 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.WebDriverWait;
-
 import java.time.Duration;
 import java.util.function.Function;
 
-import static org.junit.jupiter.api.Assertions.fail;
 
 public class TestingSelenium{
     private WebDriver driver;
@@ -491,6 +489,45 @@ public class TestingSelenium{
                 String displayedBirthDate = birthDateFieldOnMainPage.getAttribute("value");
 
                 Assertions.assertNotEquals(futureDate, displayedBirthDate, "A data de nascimento não deve ser editada para uma data futura!");
+            }
+
+        }
+    }
+
+    @Nested
+    @DisplayName("Navigation Tests")
+    class NavigationTest {
+
+        @Nested
+        @DisplayName("MainPageNavigationTests")
+        class MainPageNavigationTests{
+
+            @Test
+            void shouldSearchPersonByCpf() {
+
+                goToRegistrationPage();
+
+                String cpf = "123.456.789-60";
+                String nome = "Analu";
+
+                registerPerson(driver,
+                        cpf,
+                        nome,
+                        "Rua das Flores",
+                        "123",
+                        "12345-678",
+                        "2000-12-31",
+                        "Desenvolvedora de software");
+
+                goToMainPage();
+                WebElement cpfField = driver.findElement(By.id("iPesquisa"));
+                cpfField.sendKeys("123.456.789-60");
+
+                WebElement searchButton = driver.findElement(By.xpath("//img[@alt='Imagem de pesquisa']"));
+                searchButton.click();
+
+                String expectedMessageTwo = "1 pessoas encontradas!";
+                verifyToastMessage(driver, expectedMessageTwo);
             }
 
         }
