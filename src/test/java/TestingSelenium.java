@@ -531,6 +531,39 @@ public class TestingSelenium{
                 verifyToastMessage(driver, expectedMessageTwo);
             }
 
+            @Test
+            @DisplayName("Should show alert when CPF is not registered")
+            void shouldShowAlertWhenCpfIsNotRegistered() {
+
+                goToRegistrationPage();
+
+                String cpf = "123.456.789-60";
+                String nome = "Analu";
+
+                registerPerson(driver,
+                        cpf,
+                        nome,
+                        "Rua das Flores",
+                        "123",
+                        "12345-678",
+                        "2000-12-31",
+                        "Desenvolvedora de software");
+
+                goToMainPage();
+                WebElement cpfField = driver.findElement(By.id("iPesquisa"));
+                cpfField.sendKeys("123.456.789-61");
+
+                WebElement searchButton = driver.findElement(By.xpath("//img[@alt='Imagem de pesquisa']"));
+                searchButton.click();
+
+                String expectedMessageTwo = "Nenhuma pessoa encontrada!";
+                verifyToastMessage(driver, expectedMessageTwo);
+            }
+
+
+
+
+
         }
     }
 }
