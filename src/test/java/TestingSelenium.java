@@ -375,6 +375,71 @@ public class TestingSelenium{
                 WebElement cpfField = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("iCpf")));
                 Assertions.assertFalse(cpfField.isEnabled());
             }
+
+            @Test
+            @DisplayName("It should show validation messages and not submit the form on the edit page if any field is empty")
+            void itShouldShowValidationMessagesAndNotSubmitTheFormOnTheEditPageIfAnyFieldIsEmpty() throws InterruptedException {
+                goToRegistrationPage();
+
+                String cpf = "123.456.789-02";
+                registerPerson(driver,
+                        cpf,
+                        "Antonia Francisca",
+                        "Rua das Flores",
+                        "123",
+                        "12345-678",
+                        "2000-12-31",
+                        "Desenvolvedora de software");
+
+                goToMainPage();
+                WebElement editButton = driver.findElement(By.id(cpf));
+                editButton.click();
+
+                fluentWaiterCertainPage(driver, "Adicionar Pessoa");
+
+                WebElement nomeField = driver.findElement(By.id("iNome"));
+                nomeField.clear();
+                driver.findElement(By.id("cadastrarPessoa")).click();
+                String nomeValidationMessage = nomeField.getAttribute("validationMessage");
+                Assertions.assertEquals("Preencha este campo.", nomeValidationMessage, "O campo 'Nome' deve exibir a mensagem 'Preencha este campo'.");
+                nomeField.sendKeys("Antonia Francisca");
+
+                WebElement ruaField = driver.findElement(By.id("iRua"));
+                ruaField.clear();
+                driver.findElement(By.id("cadastrarPessoa")).click();
+                String ruaValidationMessage = ruaField.getAttribute("validationMessage");
+                Assertions.assertEquals("Preencha este campo.", ruaValidationMessage, "O campo 'Rua' deve exibir a mensagem 'Preencha este campo'.");
+                ruaField.sendKeys("Rua das Flores");
+
+                WebElement numeroField = driver.findElement(By.id("iNumero"));
+                numeroField.clear();
+                driver.findElement(By.id("cadastrarPessoa")).click();
+                String numeroValidationMessage = numeroField.getAttribute("validationMessage");
+                Assertions.assertEquals("Preencha este campo.", numeroValidationMessage, "O campo 'Número' deve exibir a mensagem 'Preencha este campo'.");
+                numeroField.sendKeys("123");
+
+                WebElement cepField = driver.findElement(By.id("iCep"));
+                cepField.clear();
+                driver.findElement(By.id("cadastrarPessoa")).click();
+                String cepValidationMessage = cepField.getAttribute("validationMessage");
+                Assertions.assertEquals("Preencha este campo.", cepValidationMessage, "O campo 'CEP' deve exibir a mensagem 'Preencha este campo'.");
+                cepField.sendKeys("12345-678");
+
+                WebElement dataNascField = driver.findElement(By.id("iDataNasc"));
+                dataNascField.clear();
+                driver.findElement(By.id("cadastrarPessoa")).click();
+                String dataNascValidationMessage = dataNascField.getAttribute("validationMessage");
+                Assertions.assertEquals("Preencha este campo.", dataNascValidationMessage, "O campo 'Data de Nascimento' deve exibir a mensagem 'Preencha este campo'.");
+                dataNascField.sendKeys("2000-12-31");
+
+                WebElement profissaoField = driver.findElement(By.id("iProfissao"));
+                profissaoField.clear();
+                driver.findElement(By.id("cadastrarPessoa")).click();
+                String profissaoValidationMessage = profissaoField.getAttribute("validationMessage");
+                Assertions.assertEquals("Preencha este campo.", profissaoValidationMessage, "O campo 'Profissão' deve exibir a mensagem 'Preencha este campo'.");
+            }
+
+
         }
     }
 }
