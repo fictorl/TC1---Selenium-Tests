@@ -325,6 +325,29 @@ public class TestingSelenium{
                 verifyIfToastMessageIsDiferentThen(successedRegistration, driver);
             }
         }
+        @Nested
+        @DisplayName("Nested DATA inputs")
+        class testsDataInputs{
+            @Test
+            @DisplayName("Should not submit form if date field is empty")
+            void shouldNotSubmitFormIfDateFieldIsEmpty(){
+                goToRegistrationPage();
+
+                registerPerson(driver,
+                        "321.654.987-10",
+                        "Carlos Caminhoneiro",
+                        "Rua Eurides Faria",
+                        "666",
+                        "13568-826",
+                        "",
+                        "Pedreiro");
+
+                WebElement CEPField = driver.findElement(By.id("iDataNasc"));
+                String validationMessage = CEPField.getAttribute("validationMessage");
+                assertEquals("Preencha este campo.", validationMessage, "O campo 'Data de Nascimento' deve exibir 'Preencha este campo'.");
+            }
+        }
+
     }
 
     @Nested
