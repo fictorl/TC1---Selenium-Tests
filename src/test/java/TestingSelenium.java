@@ -503,6 +503,7 @@ public class TestingSelenium{
         class MainPageNavigationTests{
 
             @Test
+            @DisplayName("Should search person by CPF")
             void shouldSearchPersonByCpf() {
 
                 goToRegistrationPage();
