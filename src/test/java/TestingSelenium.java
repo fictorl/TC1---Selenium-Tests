@@ -11,6 +11,9 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
 import java.util.function.Function;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 
 public class TestingSelenium{
     private WebDriver driver;
@@ -71,7 +74,7 @@ public class TestingSelenium{
 
         // Verifica o texto do toast
         String actualMessage = toast.getText();
-        Assertions.assertEquals(actualMessage, expectedMessage);
+        assertEquals(actualMessage, expectedMessage);
     }
 
 
@@ -206,7 +209,7 @@ public class TestingSelenium{
                         "" );
                 WebElement nomeField = driver.findElement(By.id("iProfissao"));
                 String validationMessage = nomeField.getAttribute("validationMessage");
-                Assertions.assertEquals("Preencha este campo.", validationMessage, "O campo 'Nome' deve exibir a mensagem 'Preencha este campo'.");
+                assertEquals("Preencha este campo.", validationMessage, "O campo 'Nome' deve exibir a mensagem 'Preencha este campo'.");
             }        
         }
 
@@ -229,7 +232,7 @@ public class TestingSelenium{
 
                 WebElement nomeField = driver.findElement(By.id("iNome"));
                 String validationMessage = nomeField.getAttribute("validationMessage");
-                Assertions.assertEquals("Preencha este campo.", validationMessage, "O campo 'Nome' deve exibir a mensagem 'Preencha este campo'.");
+                assertEquals("Preencha este campo.", validationMessage, "O campo 'Nome' deve exibir a mensagem 'Preencha este campo'.");
             }        
         }
         
@@ -253,7 +256,7 @@ public class TestingSelenium{
 
                 WebElement ruaField = driver.findElement(By.id("iRua"));
                 String validationMessage = ruaField.getAttribute("validationMessage");
-                Assertions.assertEquals("Preencha este campo.", validationMessage, "O campo 'Rua' deve exibir a mensagem 'Preencha este campo'.");
+                assertEquals("Preencha este campo.", validationMessage, "O campo 'Rua' deve exibir a mensagem 'Preencha este campo'.");
             }        
         }
         
@@ -278,7 +281,7 @@ public class TestingSelenium{
 
                 WebElement numeroField = driver.findElement(By.id("iNumero"));
                 String validationMessage = numeroField.getAttribute("validationMessage");
-                Assertions.assertEquals("Preencha este campo.", validationMessage, "O campo 'Número' deve exibir a mensagem 'Preencha este campo'.");
+                assertEquals("Preencha este campo.", validationMessage, "O campo 'Número' deve exibir a mensagem 'Preencha este campo'.");
             }
         }
 
@@ -301,7 +304,7 @@ public class TestingSelenium{
 
                     WebElement CEPField = driver.findElement(By.id("iCEP"));
                     String validationMessage = CEPField.getAttribute("validationMessage");
-                    Assertions.assertEquals("Preencha este campo.", validationMessage, "O campo 'CEP' deve exibir 'Preencha este campo'.");
+                    assertEquals("Preencha este campo.", validationMessage, "O campo 'CEP' deve exibir 'Preencha este campo'.");
                 }
 
             @Test
@@ -417,42 +420,42 @@ public class TestingSelenium{
                 nomeField.clear();
                 driver.findElement(By.id("cadastrarPessoa")).click();
                 String nomeValidationMessage = nomeField.getAttribute("validationMessage");
-                Assertions.assertEquals("Preencha este campo.", nomeValidationMessage, "O campo 'Nome' deve exibir a mensagem 'Preencha este campo'.");
+                assertEquals("Preencha este campo.", nomeValidationMessage, "O campo 'Nome' deve exibir a mensagem 'Preencha este campo'.");
                 nomeField.sendKeys("Antonia Francisca");
 
                 WebElement ruaField = driver.findElement(By.id("iRua"));
                 ruaField.clear();
                 driver.findElement(By.id("cadastrarPessoa")).click();
                 String ruaValidationMessage = ruaField.getAttribute("validationMessage");
-                Assertions.assertEquals("Preencha este campo.", ruaValidationMessage, "O campo 'Rua' deve exibir a mensagem 'Preencha este campo'.");
+                assertEquals("Preencha este campo.", ruaValidationMessage, "O campo 'Rua' deve exibir a mensagem 'Preencha este campo'.");
                 ruaField.sendKeys("Rua das Flores");
 
                 WebElement numeroField = driver.findElement(By.id("iNumero"));
                 numeroField.clear();
                 driver.findElement(By.id("cadastrarPessoa")).click();
                 String numeroValidationMessage = numeroField.getAttribute("validationMessage");
-                Assertions.assertEquals("Preencha este campo.", numeroValidationMessage, "O campo 'Número' deve exibir a mensagem 'Preencha este campo'.");
+                assertEquals("Preencha este campo.", numeroValidationMessage, "O campo 'Número' deve exibir a mensagem 'Preencha este campo'.");
                 numeroField.sendKeys("123");
 
                 WebElement cepField = driver.findElement(By.id("iCep"));
                 cepField.clear();
                 driver.findElement(By.id("cadastrarPessoa")).click();
                 String cepValidationMessage = cepField.getAttribute("validationMessage");
-                Assertions.assertEquals("Preencha este campo.", cepValidationMessage, "O campo 'CEP' deve exibir a mensagem 'Preencha este campo'.");
+                assertEquals("Preencha este campo.", cepValidationMessage, "O campo 'CEP' deve exibir a mensagem 'Preencha este campo'.");
                 cepField.sendKeys("12345-678");
 
                 WebElement dataNascField = driver.findElement(By.id("iDataNasc"));
                 dataNascField.clear();
                 driver.findElement(By.id("cadastrarPessoa")).click();
                 String dataNascValidationMessage = dataNascField.getAttribute("validationMessage");
-                Assertions.assertEquals("Preencha este campo.", dataNascValidationMessage, "O campo 'Data de Nascimento' deve exibir a mensagem 'Preencha este campo'.");
+                assertEquals("Preencha este campo.", dataNascValidationMessage, "O campo 'Data de Nascimento' deve exibir a mensagem 'Preencha este campo'.");
                 dataNascField.sendKeys("2000-12-31");
 
                 WebElement profissaoField = driver.findElement(By.id("iProfissao"));
                 profissaoField.clear();
                 driver.findElement(By.id("cadastrarPessoa")).click();
                 String profissaoValidationMessage = profissaoField.getAttribute("validationMessage");
-                Assertions.assertEquals("Preencha este campo.", profissaoValidationMessage, "O campo 'Profissão' deve exibir a mensagem 'Preencha este campo'.");
+                assertEquals("Preencha este campo.", profissaoValidationMessage, "O campo 'Profissão' deve exibir a mensagem 'Preencha este campo'.");
             }
 
             @Test
@@ -560,8 +563,16 @@ public class TestingSelenium{
                 verifyToastMessage(driver, expectedMessageTwo);
             }
 
+            @Test
+            @DisplayName("Should navigate to add person page when add button is clicked")
+            void shouldNavigateToAddPersonPage() {
+                WebElement addButton = driver.findElement(By.xpath("//a[@href='./addPessoa.html']"));
+                addButton.click();
 
+                WebElement registrationPageElement = driver.findElement(By.xpath("//h1[text()='Cadastrar Pessoa']"));
 
+                assertTrue(registrationPageElement.isDisplayed(), "A navegação para a página de cadastro falhou.");
+            }
 
 
         }
