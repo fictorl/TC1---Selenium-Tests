@@ -108,6 +108,23 @@ public class TestingSelenium{
         driver.findElement(By.id("cadastrarPessoa")).click();
     }
 
+    public void deletePerson(WebDriver driver, String cpf, List<WebElement> tableRows) {
+        fluentWaiterCertainPage(driver, "Pessoas");
+
+        WebElement personToDeleteRow = null;
+
+        for (WebElement row : tableRows) {
+            if (row.findElement(By.id(cpf)).isDisplayed()) personToDeleteRow = row;
+        }
+
+        personToDeleteRow.findElements(By.tagName("button")).get(1).click();
+    }
+
+    public boolean checkingIfPersonWasDeleted(WebDriver driver, String cpf, List<WebElement> tableRows) {
+        fluentWaiterCertainPage(driver, "Pessoas");
+        return tableRows.stream().noneMatch( row -> row.findElement(By.tagName("td")).getText() == cpf);
+    }
+
     public static String generateRandomString(int length) {
         String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
                 + "abcdefghijklmnopqrstuvwxyz"
@@ -572,6 +589,81 @@ public class TestingSelenium{
             }
 
         }
+
+        @Nested
+        @DisplayName("Deleting Tests")
+        class deletingTests{
+
+            // should not delite a person more than once
+            @Test
+            @DisplayName("Should not delete a person more than once")
+            void shouldNotDeleteAPersonMoreThanOnce() throws InterruptedException {
+                goToRegistrationPage();
+                String cpf = "123.456.789-01";
+                registerPerson(driver,
+                        cpf,
+                        "Maria Joseeeé",
+                        "Rua das Flores",
+                        "123",
+                        "12345-678",
+                        "2000-12-31",
+                        "Engenheiro");
+                goToMainPage();
+
+                WebElement personDeleteButton = findPersonDeleteButton(cpf);
+                if (personDeleteButton != null) personDeleteButton.click();
+
+                WebElement refreshPersonDeleteButton = findPersonDeleteButton(cpf);
+
+                assertTrue(refreshPersonDeleteButton == null);
+            }
+
+            // should not delete the same person´s email more than once
+
+        }
+
+        @Nested
+        @DisplayName("Listing Tests")
+        class listingTests{
+
+            @Nested
+            @DisplayName("after creating operations")
+            class afterCreationOperations{
+
+                // should not list a person just added more or less than once
+
+                // should not list a person´s email just added more or less than once
+
+                // should not list a person´s phone number just added more or less than once
+            }
+
+            @Nested
+            @DisplayName("after deleting operations")
+            class afterDeletionOperation{
+
+                // should not list a person just deleted
+
+                // should not list a person´s email just deleted
+
+                // should not list a person´s phone number just deleted
+            }
+
+        }
+    }
+
+    private WebElement findPersonDeleteButton(String cpf) {
+        WebElement tableBody = driver.findElement(By.tagName("tbody"));
+        List<WebElement> tableRows = tableBody.findElements(By.tagName("tr"));
+        WebElement personToDeleteRow = null;
+
+        for (WebElement row : tableRows) {
+            if (row.findElement(By.id(cpf)).isDisplayed()) personToDeleteRow = row;
+        }
+
+        if (personToDeleteRow == null) return null;
+
+        WebElement deleteButton = personToDeleteRow.findElements(By.id(cpf)).get(1);
+        return deleteButton;
     }
 
     @Nested
