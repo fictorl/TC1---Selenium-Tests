@@ -9,6 +9,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
+import java.util.Random;
 import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -105,6 +106,22 @@ public class TestingSelenium{
         driver.findElement(By.id("iDataNasc")).sendKeys(dataNasc);
         driver.findElement(By.id("iProfissao")).sendKeys(profissao);
         driver.findElement(By.id("cadastrarPessoa")).click();
+    }
+
+    public static String generateRandomString(int length) {
+        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                + "abcdefghijklmnopqrstuvwxyz"
+                + "0123456789 "
+                + "!@#$%^&*()-_=+[]{};:'\",.<>?/|\\";
+        Random random = new Random();
+        StringBuilder stringBuilder = new StringBuilder();
+
+        for (int i = 0; i < length; i++) {
+            int index = random.nextInt(characters.length());
+            stringBuilder.append(characters.charAt(index));
+        }
+
+        return stringBuilder.toString();
     }
 
 
@@ -311,13 +328,14 @@ public class TestingSelenium{
             @DisplayName("Should not submit form if the CEP field is in wrong format")
             void shouldNotSubmitFormIfTheCEPFieldIsInWrongFormat(){
                 goToRegistrationPage();
+                String randomCEP = generateRandomString(20);
 
                 registerPerson(driver,
                         "123.456.789-01",
                         "Marcao Pescador",
                         "Rua Eugenio Franco",
                         "283",
-                        "?0%0000..00#0000000@00!!0",
+                        randomCEP,
                         "1970-12-06",
                         "Pedreiro");
 
@@ -350,6 +368,7 @@ public class TestingSelenium{
             @DisplayName("Should not submit form if date field is in wrong format")
             void shouldNotSubmitFormIfTheDateFieldIsInWrongFormat(){
                 goToRegistrationPage();
+                String randomDataNasc = generateRandomString(20);
 
                 registerPerson(driver,
                         "321.654.987-10",
@@ -357,7 +376,7 @@ public class TestingSelenium{
                         "Rua Eurides Faria",
                         "666",
                         "13568-826",
-                        "aa&h99-091",
+                        randomDataNasc,
                         "Dragueiro");
 
                 String successedRegistration = "Formato de Data inválido!";
@@ -403,6 +422,25 @@ public class TestingSelenium{
 
                 String expectedMessageTwo = "O CPF 123.456.789-01 ja foi cadastrado!";
                 verifyToastMessage(driver, expectedMessageTwo);
+            }
+
+            @Test
+            @DisplayName("Should not register a person with a very long name or special characters")
+            void shouldNotRegisterAPersonWithAVeryLongNameOrSpecialCharacters(){
+                goToRegistrationPage();
+                String randomName = generateRandomString(150);
+
+                registerPerson(driver,
+                        "321.654.987-10",
+                        randomName,
+                        "Rua Copacabana",
+                        "171",
+                        "13568-826",
+                        "1111-11-11",
+                        "Piscineiro");
+
+                String successedRegistration = "Formato de Nome inválido!";
+                verifyIfToastMessageIsDiferentThen(successedRegistration, driver);
             }
         }
 
