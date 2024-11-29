@@ -326,7 +326,7 @@ public class TestingSelenium{
             }
         }
         @Nested
-        @DisplayName("Nested DATA inputs")
+        @DisplayName("Nested data de nascimento inputs")
         class testsDataInputs{
             @Test
             @DisplayName("Should not submit form if date field is empty")
@@ -340,14 +340,30 @@ public class TestingSelenium{
                         "666",
                         "13568-826",
                         "",
-                        "Pedreiro");
+                        "Dragueiro");
 
                 WebElement CEPField = driver.findElement(By.id("iDataNasc"));
                 String validationMessage = CEPField.getAttribute("validationMessage");
                 assertEquals("Preencha este campo.", validationMessage, "O campo 'Data de Nascimento' deve exibir 'Preencha este campo'.");
             }
-        }
+            @Test
+            @DisplayName("Should not submit form if date field is in wrong format")
+            void shouldNotSubmitFormIfTheDateFieldIsInWrongFormat(){
+                goToRegistrationPage();
 
+                registerPerson(driver,
+                        "321.654.987-10",
+                        "Carlos Caminhoneiro",
+                        "Rua Eurides Faria",
+                        "666",
+                        "13568-826",
+                        "aa&h99-091",
+                        "Dragueiro");
+
+                String successedRegistration = "Formato de Data inválido!";
+                verifyIfToastMessageIsDiferentThen(successedRegistration, driver);
+            }
+        }
     }
 
     @Nested
