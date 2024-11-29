@@ -125,6 +125,36 @@ public class TestingSelenium{
         return tableRows.stream().noneMatch( row -> row.findElement(By.tagName("td")).getText() == cpf);
     }
 
+    private WebElement findPersonEditButton(String cpf) {
+        WebElement tableBody = driver.findElement(By.tagName("tbody"));
+        List<WebElement> tableRows = tableBody.findElements(By.tagName("tr"));
+        WebElement personToEditRow = null;
+
+        for (WebElement row : tableRows) {
+            if (row.findElement(By.id(cpf)).isDisplayed()) personToEditRow = row;
+        }
+
+        if (personToEditRow == null) return null;
+
+        WebElement editButton = personToEditRow.findElements(By.id(cpf)).get(0);
+        return editButton;
+    }
+
+    private WebElement findPersonDeleteButton(String cpf) {
+        WebElement tableBody = driver.findElement(By.tagName("tbody"));
+        List<WebElement> tableRows = tableBody.findElements(By.tagName("tr"));
+        WebElement personToDeleteRow = null;
+
+        for (WebElement row : tableRows) {
+            if (row.findElement(By.id(cpf)).isDisplayed()) personToDeleteRow = row;
+        }
+
+        if (personToDeleteRow == null) return null;
+
+        WebElement deleteButton = personToDeleteRow.findElements(By.id(cpf)).get(1);
+        return deleteButton;
+    }
+
     public static String generateRandomString(int length) {
         String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
                 + "abcdefghijklmnopqrstuvwxyz"
@@ -649,21 +679,6 @@ public class TestingSelenium{
             }
 
         }
-    }
-
-    private WebElement findPersonDeleteButton(String cpf) {
-        WebElement tableBody = driver.findElement(By.tagName("tbody"));
-        List<WebElement> tableRows = tableBody.findElements(By.tagName("tr"));
-        WebElement personToDeleteRow = null;
-
-        for (WebElement row : tableRows) {
-            if (row.findElement(By.id(cpf)).isDisplayed()) personToDeleteRow = row;
-        }
-
-        if (personToDeleteRow == null) return null;
-
-        WebElement deleteButton = personToDeleteRow.findElements(By.id(cpf)).get(1);
-        return deleteButton;
     }
 
     @Nested
