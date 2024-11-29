@@ -653,6 +653,21 @@ public class TestingSelenium{
 
 
         }
+        @Nested
+        @DisplayName("EmailAndTelefoneNavigationTests")
+        class EmailAndTelefoneNavigationTests{
+            @Test
+            @DisplayName("Should navigate to and cancel an email inclusion")
+            void shouldNavigateToAndCancelAnEmailInclusion() throws InterruptedException {
+                goToRegistrationPage();
+                WebElement addEmailElement = driver.findElement(By.xpath("//*[@id=\"formCadastroPessoa\"]/div[1]/button"));
+                addEmailElement.click();
+                WebElement emailField = driver.findElement(By.id("iEmail"));
+                emailField.sendKeys("lorinho@gmail.com");
+                WebElement cancelButton = driver.findElement(By.xpath("//*[@id=\"formCadastrarEmailPessoa\"]/footer/button[1]"));
+                cancelButton.click();
+            }
+        }
     }
 }
 
