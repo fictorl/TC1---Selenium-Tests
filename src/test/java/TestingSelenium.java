@@ -9,11 +9,11 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
+import java.util.List;
 import java.util.Random;
 import java.util.function.Function;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 public class TestingSelenium{
@@ -657,8 +657,8 @@ public class TestingSelenium{
         @DisplayName("EmailAndTelefoneNavigationTests")
         class EmailAndTelefoneNavigationTests{
             @Test
-            @DisplayName("Should navigate to and cancel an email inclusion")
-            void shouldNavigateToAndCancelAnEmailInclusion() throws InterruptedException {
+            @DisplayName("Should navigate to email inclusion and cancel")
+            void shouldNavigateToEmailInclusionAndCancel() {
                 goToRegistrationPage();
                 WebElement addEmailElement = driver.findElement(By.xpath("//*[@id=\"formCadastroPessoa\"]/div[1]/button"));
                 addEmailElement.click();
@@ -666,7 +666,35 @@ public class TestingSelenium{
                 emailField.sendKeys("lorinho@gmail.com");
                 WebElement cancelButton = driver.findElement(By.xpath("//*[@id=\"formCadastrarEmailPessoa\"]/footer/button[1]"));
                 cancelButton.click();
+
+                List<WebElement> emailList = driver.findElements(By.xpath("//*[@id='cadastroPessoaEmails']/li"));
+                boolean emailFound = emailList.stream()
+                        .anyMatch(email -> email.getText().equals("lorinho@gmail.com"));
+
+                assertFalse(emailFound, "O email 'lorinho@gmail.com' foi adicionado, mas deveria ter sido cancelado.");
             }
+            @Test
+            @DisplayName("Should navigate to email and including it")
+            void shouldNavigateToEmailAndIncludingIt() {
+                goToRegistrationPage();
+
+                WebElement addEmailElement = driver.findElement(By.xpath("//*[@id=\"formCadastroPessoa\"]/div[1]/button"));
+                addEmailElement.click();
+                WebElement emailField = driver.findElement(By.id("iEmail"));
+                emailField.sendKeys("marujo@gmail.com");
+                WebElement registrationButton = driver.findElement(By.xpath("//*[@id=\"formCadastrarEmailPessoa\"]/footer/button[2]"));
+                registrationButton.click();
+
+                WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+                wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//*[@id='cadastroPessoaEmails']/li[contains(text(), 'marujo@gmail.com')]")));
+
+                List<WebElement> emailList = driver.findElements(By.xpath("//*[@id='cadastroPessoaEmails']/li"));
+                boolean emailFound = emailList.stream()
+                        .anyMatch(email -> email.getText().equals("marujo@gmail.com"));
+
+                assertTrue(emailFound, "O email 'marujo@gmail.com' não foi encontrado na lista.");
+            }
+
         }
     }
 }
