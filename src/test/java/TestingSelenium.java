@@ -172,8 +172,6 @@ public class TestingSelenium{
                 .findElements(By.tagName("button")).get(1).click();
 
         driver.findElement(By.id("cadastrarPessoa")).click();
-
-        goToMainPage();
     }
 
     private void addingPhoneToPerson(String cpf, String phone) throws InterruptedException {
@@ -879,6 +877,7 @@ public class TestingSelenium{
 
                 goToEditPersonPage(cpf);
                 addingEmailToPerson(cpf, email);
+                goToMainPage();
                 WebElement editButton = findPersonEditButton(cpf);
                 editButton.click();
 
@@ -960,6 +959,7 @@ public class TestingSelenium{
                     for (String email : expectedEmailsList) {
                         goToEditPersonPage(cpf);
                         addingEmailToPerson(cpf, email);
+                        goToMainPage();
                     }
 
                     List<String> emailsList = listOfRegisteredEmailsOfAPerson(cpf);
