@@ -1124,7 +1124,40 @@ public class TestingSelenium{
 
                 // should not list a person´s email just deleted
 
-                // should not list a person´s phone number just deleted
+                @Test
+                @DisplayName("Should not list a person´s phone just deleted")
+                void shouldNotListAPersonsPhoneJustDeleted() throws InterruptedException {
+                    goToRegistrationPage();
+
+                    String cpf = "123.456.789-01";
+                    String phone1 = "(19)9999-8888";
+                    String phone2 = "(19)9999-9999";
+
+                    registerPerson(driver,
+                            cpf,
+                            "Maria Joseeeé",
+                            "Rua das Flores",
+                            "123",
+                            "12345-678",
+                            "2000-12-31",
+                            "Engenheiro");
+
+                    goToMainPage();
+
+                    fluentWaiterCertainPage(driver, "Pessoas");
+                    goToEditPersonPage(cpf);
+                    addingPhoneToPerson(cpf, phone1);
+                    addingPhoneToPerson(cpf, phone2);
+
+                    fluentWaiterCertainPage(driver, "Pessoas");
+                    goToEditPersonPage(cpf);
+                    fluentWaiterCertainPage(driver,"Adicionar Pessoa");
+
+                    deletingCertainTelephoneNumberOfThePerson(phone1);
+
+                    List<String> listOfEmails = listOfRegisteredEmailsOfAPerson(cpf);
+                    assertFalse(listOfEmails.contains(phone1));
+                }
             }
 
         }
