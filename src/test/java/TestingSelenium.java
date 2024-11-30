@@ -10,6 +10,7 @@ import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 import java.util.function.Function;
 
@@ -51,6 +52,19 @@ public class TestingSelenium{
                     @Override
                     public Boolean apply(WebDriver driver) {
                         return title.equals(driver.getTitle());
+                    }
+                });
+    }
+
+    public void fluentWaiterCertainComponentById(WebDriver driver, String id) {
+        new FluentWait<>(driver)
+                .withTimeout(Duration.ofSeconds(10)) // tempo máximo de espera
+                .pollingEvery(Duration.ofMillis(700)) // frequência de verificação
+                .ignoring(Exception.class) // ignorar exceções durante a verificação
+                .until(new Function<WebDriver, Boolean>() {
+                    @Override
+                    public Boolean apply(WebDriver driver) {
+                        return driver.findElement(By.id(id)).isDisplayed();
                     }
                 });
     }
@@ -106,6 +120,31 @@ public class TestingSelenium{
         driver.findElement(By.id("iDataNasc")).sendKeys(dataNasc);
         driver.findElement(By.id("iProfissao")).sendKeys(profissao);
         driver.findElement(By.id("cadastrarPessoa")).click();
+    }
+
+    private void addingTelephoneNumberToPerson(String cpf, String phoneNumber) throws InterruptedException {
+        WebElement editButton = findPersonEditButton(cpf);
+
+        if (Objects.isNull(editButton)) Assertions.fail("Person was not created before editing phone number");
+        editButton.click();
+
+        fluentWaiterCertainPage(driver, "Adicionar Pessoa");
+
+        WebElement addPhoneToPersonButton = driver.findElement(By.id("formCadastroPessoa"))
+                .findElements(By.tagName("button")).get(1);
+        addPhoneToPersonButton.click();
+
+        fluentWaiterCertainComponentById(driver, "formCadastrarTelefonePessoa");
+
+        driver.findElement(By.id("formCadastrarTelefonePessoa"))
+                .findElement(By.id("iTelefone")).sendKeys(phoneNumber);
+
+        driver.findElement(By.id("formCadastrarTelefonePessoa"))
+                .findElements(By.tagName("button")).get(1).click();
+
+        driver.findElement(By.id("cadastrarPessoa")).click();
+
+        goToMainPage();
     }
 
     public void deletePerson(WebDriver driver, String cpf, List<WebElement> tableRows) {
