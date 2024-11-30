@@ -176,6 +176,26 @@ public class TestingSelenium{
         goToMainPage();
     }
 
+    private void addingPhoneToPerson(String cpf, String phone) throws InterruptedException {
+
+        fluentWaiterCertainPage(driver, "Adicionar Pessoa");
+
+        WebElement addPhoneToPersonButton = driver.findElement(By.id("formCadastroPessoa"))
+                .findElements(By.tagName("button")).get(1);
+        addPhoneToPersonButton.click();
+
+        fluentWaiterCertainComponentById(driver, "formCadastrarTelefonePessoa");
+
+        driver.findElement(By.id("formCadastrarTelefonePessoa"))
+                .findElement(By.id("iTelefone")).sendKeys(phone);
+
+        driver.findElement(By.id("formCadastrarTelefonePessoa"))
+                .findElements(By.tagName("button")).get(1).click();
+
+        driver.findElement(By.id("cadastrarPessoa")).click();
+
+        goToMainPage();
+    }
 
     private void deletingCertainTelephoneNumberOfThePerson(String phoneNumber) {
         List<WebElement> telephoneList = driver.findElement(By.id("formCadastroPessoa"))
@@ -281,6 +301,24 @@ public class TestingSelenium{
             emailList.add(row.getText());
         }
         return emailList;
+    }
+
+    private List<String> listOfRegisteredPhonesOfAPerson(String cpf) {
+        fluentWaiterCertainPage(driver, "Pessoas");
+
+        goToEditPersonPage(cpf);
+
+        fluentWaiterCertainPage(driver, "Adicionar Pessoa");
+
+        List<WebElement> ListOfTagLiForPhones = driver.findElement(By.id("formCadastroPessoa"))
+                .findElement(By.id("cadastroPessoaTelefones")).findElements(By.tagName("li"));
+
+        List<String> phonelList = new ArrayList<>();
+
+        for (WebElement row : ListOfTagLiForPhones) {
+            phonelList.add(row.getText());
+        }
+        return phonelList;
     }
 
     public static String generateRandomString(int length) {
@@ -930,6 +968,35 @@ public class TestingSelenium{
                 }
 
                 // should not list a person´s phone number just added more or less than once
+                @Test
+                @DisplayName("Should list all phone number just added to a person")
+                void shoulListAllPhoneNumberJustAddedToAPerson() throws InterruptedException {
+                    goToRegistrationPage();
+
+                    String cpf = "123.456.789-01";
+                    registerPerson(driver,
+                            cpf,
+                            "Maria Joseeeé",
+                            "Rua das Flores",
+                            "123",
+                            "12345-678",
+                            "2000-12-31",
+                            "Engenheiro");
+                    goToMainPage();
+
+                    List<String> expectedPhonesList = new ArrayList<>();
+                    expectedPhonesList.add("(19) 8888-8888");
+                    expectedPhonesList.add("(19) 9999-9999");
+
+                    for (String phone : expectedPhonesList) {
+                        goToEditPersonPage(cpf);
+                        addingPhoneToPerson(cpf, phone);
+                    }
+
+                    List<String> phonesList = listOfRegisteredPhonesOfAPerson(cpf);
+
+                    assertEquals(phonesList, expectedPhonesList);
+                }
             }
 
             @Nested
