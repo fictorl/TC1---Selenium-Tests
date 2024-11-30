@@ -222,16 +222,20 @@ public class TestingSelenium{
         driver.findElement(By.id("cadastrarPessoa")).click();
     }
 
-    public void deletePerson(WebDriver driver, String cpf, List<WebElement> tableRows) {
+    public void deletePerson(WebDriver driver, String cpf, List<WebElement> tableRows) throws InterruptedException {
         fluentWaiterCertainPage(driver, "Pessoas");
+        fluentWaiterCertainComponentById(driver, "tabelaPessoas");
 
         WebElement personToDeleteRow = null;
 
         for (WebElement row : tableRows) {
-            if (row.findElement(By.id(cpf)).isDisplayed()) personToDeleteRow = row;
+            WebElement tdItemWithCPF = row.findElement(By.tagName("td"));
+            if (tdItemWithCPF.getText().equals(cpf)) {
+                personToDeleteRow = row;
+                personToDeleteRow.findElements(By.tagName("button")).get(1).click();
+                break;
+            }
         }
-
-        personToDeleteRow.findElements(By.tagName("button")).get(1).click();
     }
 
     public boolean checkingIfPersonWasDeleted(WebDriver driver, String cpf, List<WebElement> tableRows) {
@@ -771,7 +775,6 @@ public class TestingSelenium{
 
                 Assertions.assertNotEquals(futureDate, displayedBirthDate, "A data de nascimento não deve ser editada para uma data futura!");
             }
-
         }
 
         @Nested
