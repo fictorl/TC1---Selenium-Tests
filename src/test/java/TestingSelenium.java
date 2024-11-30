@@ -147,6 +147,21 @@ public class TestingSelenium{
         goToMainPage();
     }
 
+
+    private void deletingCertainTelephoneNumberOfThePerson(String phoneNumber) {
+        List<WebElement> telephoneList = driver.findElement(By.id("formCadastroPessoa"))
+                .findElement(By.id("cadastroPessoaTelefones")).findElements(By.tagName("li"));
+
+        for (WebElement telephone : telephoneList) {
+            if (telephone.getText().equals(phoneNumber)) {
+                telephone.findElement(By.tagName("img")).click();
+                break;
+            }
+        }
+
+        driver.findElement(By.id("cadastrarPessoa")).click();
+    }
+
     public void deletePerson(WebDriver driver, String cpf, List<WebElement> tableRows) {
         fluentWaiterCertainPage(driver, "Pessoas");
 
@@ -717,11 +732,8 @@ public class TestingSelenium{
                 System.out.print(firstPhonesList);
 
                 //deletar telefone
-                WebElement phoneToDeleteButton = driver.findElement(By.id("formCadastroPessoa"))
-                        .findElement(By.id("cadastroPessoaTelefones")).findElement(By.tagName("li"))
-                        .findElement(By.tagName("img"));
-                phoneToDeleteButton.click();
-                driver.findElement(By.id("cadastrarPessoa")).click();
+
+                deletingCertainTelephoneNumberOfThePerson(phoneNumber);
 
                 goToMainPage();
                 editButton = findPersonEditButton(cpf);
