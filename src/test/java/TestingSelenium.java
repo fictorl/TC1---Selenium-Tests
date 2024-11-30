@@ -407,7 +407,7 @@ public class TestingSelenium{
 
 
         @Nested
-        @DisplayName("Nested class name")
+        @DisplayName("Tests Profissao input")
         class nestedClassName{
             @Test
             @DisplayName("Testing Profissao input when it is filed with special characters")
