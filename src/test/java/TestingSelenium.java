@@ -702,6 +702,35 @@ public class TestingSelenium{
                 String successedRegistration = nome + " adicionado com sucesso!";
                 verifyIfToastMessageIsDiferentThen(successedRegistration, driver);
             }
+            @Test
+            @DisplayName("Should not register a person with Telefone in wrong format")
+            void shouldNotRegisterAPersonWithTelefoneInWrongFormat() {
+                goToRegistrationPage();
+
+                String randomTelefone = generateRandomString(150);
+                String nome = "Sebastião Chaveiro";
+                fluentWaiterCertainPage(driver, "Adicionar Pessoa");
+
+                WebElement addTelefoneToPersonButton = driver.findElement(By.xpath("//*[@id=\"formCadastroPessoa\"]/div[2]/button"));
+                addTelefoneToPersonButton.click();
+
+                driver.findElement(By.id("formCadastrarTelefonePessoa"))
+                        .findElement(By.id("iTelefone")).sendKeys(randomTelefone);
+                driver.findElement(By.id("formCadastrarTelefonePessoa"))
+                        .findElements(By.tagName("button")).get(1).click();
+
+                registerPerson(driver,
+                        "123.456.789-01",
+                        nome,
+                        "Rua Rio Araguaiana",
+                        "811",
+                        "13568-826",
+                        "1111-11-11",
+                        "Streamer");
+
+                String successedRegistration = nome + " adicionado com sucesso!";
+                verifyIfToastMessageIsDiferentThen(successedRegistration, driver);
+            }
         }
 
         @Nested
