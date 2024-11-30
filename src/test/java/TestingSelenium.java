@@ -274,7 +274,7 @@ public class TestingSelenium{
         return deleteButton;
     }
 
-    private List<String> listOfRegisteredCPFs() {
+    private List<String> listOfCPFsInTable() {
         fluentWaiterCertainPage(driver, "Pessoas");
         List<WebElement> listOfPeopleTableRows = driver.findElement(By.tagName("tbody"))
                 .findElements(By.tagName("tr"));
@@ -901,7 +901,7 @@ public class TestingSelenium{
 
                 goToMainPage();
 
-                List<String> CPFsList = listOfRegisteredCPFs();
+                List<String> CPFsList = listOfCPFsInTable();
 
                 assertEquals(CPFsList, expectedCPFsList);
             }
