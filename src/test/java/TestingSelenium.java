@@ -190,8 +190,6 @@ public class TestingSelenium{
                 .findElements(By.tagName("button")).get(1).click();
 
         driver.findElement(By.id("cadastrarPessoa")).click();
-
-        goToMainPage();
     }
 
     private void deletingCertainTelephoneNumberOfThePerson(String phoneNumber) {
@@ -1078,6 +1076,7 @@ public class TestingSelenium{
                     for (String phone : expectedPhonesList) {
                         goToEditPersonPage(cpf);
                         addingPhoneToPerson(cpf, phone);
+                        goToMainPage();
                     }
 
                     List<String> phonesList = listOfRegisteredPhonesOfAPerson(cpf);
