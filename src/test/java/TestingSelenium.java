@@ -950,6 +950,41 @@ public class TestingSelenium{
                 assertFalse(actualRegisteredPeople.stream().anyMatch(cpf -> cpf.equals(cpf1)));
             }
 
+            @Test
+            @DisplayName("Should not list a person´s email just deleted")
+            void shouldNotListAPersonsEmailJustDeleted() throws InterruptedException {
+                goToRegistrationPage();
+
+                String cpf = "123.456.789-01";
+                String email1 = "maria@gmail.com";
+                String email2 = "mj@gmail.com";
+
+                registerPerson(driver,
+                        cpf,
+                        "Maria Joseeeé",
+                        "Rua das Flores",
+                        "123",
+                        "12345-678",
+                        "2000-12-31",
+                        "Engenheiro");
+
+                goToMainPage();
+
+                fluentWaiterCertainPage(driver, "Pessoas");
+                goToEditPersonPage(cpf);
+                addingEmailToPerson(cpf, email1);
+                addingEmailToPerson(cpf, email2);
+
+                fluentWaiterCertainPage(driver, "Pessoas");
+                goToEditPersonPage(cpf);
+                fluentWaiterCertainPage(driver,"Adicionar Pessoa");
+
+                deletingCertainEmailOfThePerson(email1);
+
+                List<String> listOfEmails = listOfRegisteredEmailsOfAPerson(cpf);
+                assertFalse(listOfEmails.contains(email1));
+            }
+
         }
 
         @Nested
