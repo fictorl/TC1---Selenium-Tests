@@ -1092,7 +1092,7 @@ public class TestingSelenium{
 
             @Test
             @DisplayName("Should exit the page when exit button is clicked and show confirmation")
-            void shouldExitPage() {
+            void shouldExitThePageWhenExitButtonIsClickedAndShowConfirmation() {
                 String title = driver.getTitle();
                 WebElement exitButton = driver.findElement(By.xpath("//a[@href='#sair']"));
                 exitButton.click();
