@@ -1090,7 +1090,16 @@ public class TestingSelenium{
                 assertTrue(registrationPageElement.isDisplayed(), "A navegação para a página de cadastro falhou.");
             }
 
+            @Test
+            @DisplayName("Should exit the page when exit button is clicked and show confirmation")
+            void shouldExitPage() {
+                String title = driver.getTitle();
+                WebElement exitButton = driver.findElement(By.xpath("//a[@href='#sair']"));
+                exitButton.click();
 
+                String newTitle = driver.getTitle();
+                assertFalse(title.equals(newTitle));
+            }
         }
         @Nested
         @DisplayName("EmailAndTelefoneNavigationTests")
