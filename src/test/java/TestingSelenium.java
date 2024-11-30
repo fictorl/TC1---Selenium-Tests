@@ -1405,6 +1405,24 @@ public class TestingSelenium{
                 fluentWaiterCertainPage(driver,"Pessoas");
                 assertEquals("Pessoas", driver.getTitle());
             }
+
+            //should go back to main page after click in 'go back' button
+            @Test
+            @DisplayName("Should go back to main page after click 'go back' button")
+            void shouldGoBackToMainPageAfterClickGoBackButton() {
+                fluentWaiterCertainPage(driver,"Pessoas");
+                String cpf = "123.456.789-10";
+                String nome = "Jose Novinho da Silva";
+
+                goToRegistrationPage();
+                fluentWaiterCertainPage(driver,"Adicionar Pessoa");
+
+                WebElement goBackButton = driver.findElement(By.className("voltar"));
+                goBackButton.click();
+
+                fluentWaiterCertainPage(driver,"Pessoas");
+                assertEquals("Pessoas", driver.getTitle());
+            }
         }
     }
 }
