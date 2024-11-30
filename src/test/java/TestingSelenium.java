@@ -9,6 +9,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
@@ -246,6 +247,19 @@ public class TestingSelenium{
 
         WebElement deleteButton = personToDeleteRow.findElements(By.id(cpf)).get(1);
         return deleteButton;
+    }
+
+    private List<String> listOfRegisteredCPFs() {
+        fluentWaiterCertainPage(driver, "Pessoas");
+        List<WebElement> listOfPeopleTableRows = driver.findElement(By.tagName("tbody"))
+                .findElements(By.tagName("tr"));
+
+        List<String> peopleList = new ArrayList<>();
+
+        for (WebElement row : listOfPeopleTableRows) {
+            peopleList.add(row.findElement(By.tagName("td")).getText());
+        }
+        return peopleList;
     }
 
     public static String generateRandomString(int length) {
@@ -833,9 +847,34 @@ public class TestingSelenium{
 
             @Nested
             @DisplayName("after creating operations")
-            class afterCreationOperations{
+            class afterCreationOperations {
 
-                // should not list a person just added more or less than once
+                @Test
+                @DisplayName("Should list all people just added")
+                void shouldNotListAPersonJustAddedMoreOrLessThanOnce() {
+                goToRegistrationPage();
+
+                List<String> expectedCPFsList = new ArrayList<>();
+                expectedCPFsList.add("123.456.789-01");
+                expectedCPFsList.add("123.456.789-02");
+
+                    for (String cpf : expectedCPFsList) {
+                        registerPerson(driver,
+                                cpf,
+                                "Maria Joseeeé",
+                                "Rua das Flores",
+                                "123",
+                                "12345-678",
+                                "2000-12-31",
+                                "Engenheiro");
+                    }
+
+                goToMainPage();
+
+                List<String> CPFsList = listOfRegisteredCPFs();
+
+                assertEquals(CPFsList, expectedCPFsList);
+            }
 
                 // should not list a person´s email just added more or less than once
 
