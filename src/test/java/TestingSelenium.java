@@ -1387,6 +1387,24 @@ public class TestingSelenium{
                 fluentWaiterCertainPage(driver,"Pessoas");
                 assertEquals("Pessoas", driver.getTitle());
             }
+
+            //should go back to main page after cancel registration
+            @Test
+            @DisplayName("Should go back to main page after cancel registration")
+            void shouldGoBackToMainPageAfterCancelRegistration() {
+                fluentWaiterCertainPage(driver,"Pessoas");
+                String cpf = "123.456.789-10";
+                String nome = "Jose Novinho da Silva";
+
+                goToRegistrationPage();
+                fluentWaiterCertainPage(driver,"Adicionar Pessoa");
+
+                WebElement cancelButton = driver.findElement(By.id("cancelarCadastrarPessoa"));
+                cancelButton.click();
+
+                fluentWaiterCertainPage(driver,"Pessoas");
+                assertEquals("Pessoas", driver.getTitle());
+            }
         }
     }
 }
