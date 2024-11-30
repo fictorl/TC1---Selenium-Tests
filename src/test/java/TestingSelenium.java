@@ -1362,6 +1362,32 @@ public class TestingSelenium{
                 assertTrue(telefoneFound, "O Telefone '+55 16 99133-1123' não foi encontrado na lista.");
             }
         }
+
+        @Nested
+        @DisplayName("Edit and Register page navegation tests")
+        class editAndRegisterPageNavegationTests{
+
+            //should go back to main page after register a new person
+            @Test
+            @DisplayName("Should go back to main page after register a new page")
+            void shouldGoBackToMainPageAfterRegisterANewPage() {
+                fluentWaiterCertainPage(driver,"Pessoas");
+                String cpf = "123.456.789-10";
+                String nome = "Jose Novinho da Silva";
+
+                goToRegistrationPage();
+                registerPerson(driver,
+                        cpf,
+                        nome,
+                        "Rua das Flores",
+                        "123",
+                        "12345-678",
+                        "2000-12-31",
+                        "Desenvolvedora de software");
+                fluentWaiterCertainPage(driver,"Pessoas");
+                assertEquals("Pessoas", driver.getTitle());
+            }
+        }
     }
 }
 
