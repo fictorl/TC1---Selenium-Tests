@@ -1,13 +1,13 @@
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.By;
-import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.WebDriverWait;
+
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -148,11 +148,14 @@ public class TestingSelenium{
         goToMainPage();
     }
 
-    private void addingEmailToPerson(String cpf, String email) throws InterruptedException {
+    private void goToEditPersonPage(String cpf) {
         WebElement editButton = findPersonEditButton(cpf);
 
-        if (Objects.isNull(editButton)) fail("Person was not created before editing phone number");
+        if (Objects.isNull(editButton)) fail("Person was not created before");
         editButton.click();
+    }
+
+    private void addingEmailToPerson(String cpf, String email) throws InterruptedException {
 
         fluentWaiterCertainPage(driver, "Adicionar Pessoa");
 
@@ -260,6 +263,24 @@ public class TestingSelenium{
             peopleList.add(row.findElement(By.tagName("td")).getText());
         }
         return peopleList;
+    }
+
+    private List<String> listOfRegisteredEmailsOfAPerson(String cpf) {
+        fluentWaiterCertainPage(driver, "Pessoas");
+
+        goToEditPersonPage(cpf);
+
+        fluentWaiterCertainPage(driver, "Adicionar Pessoa");
+
+        List<WebElement> ListOfTagLiForEmails = driver.findElement(By.id("formCadastroPessoa"))
+                .findElement(By.id("cadastroPessoaEmails")).findElements(By.tagName("li"));
+
+        List<String> emailList = new ArrayList<>();
+
+        for (WebElement row : ListOfTagLiForEmails) {
+            emailList.add(row.getText());
+        }
+        return emailList;
     }
 
     public static String generateRandomString(int length) {
@@ -818,6 +839,7 @@ public class TestingSelenium{
 
                 String email = "maria@gmail.com";
 
+                goToEditPersonPage(cpf);
                 addingEmailToPerson(cpf, email);
                 WebElement editButton = findPersonEditButton(cpf);
                 editButton.click();
