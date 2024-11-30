@@ -899,6 +899,35 @@ public class TestingSelenium{
             }
 
                 // should not list a person´s email just added more or less than once
+                @Test
+                @DisplayName("Should list all email just added to a person")
+                void shouldListAllEmailJustAddedToAPerson() throws InterruptedException {
+                    goToRegistrationPage();
+
+                    String cpf = "123.456.789-01";
+                    registerPerson(driver,
+                            cpf,
+                            "Maria Joseeeé",
+                            "Rua das Flores",
+                            "123",
+                            "12345-678",
+                            "2000-12-31",
+                            "Engenheiro");
+                    goToMainPage();
+
+                    List<String> expectedEmailsList = new ArrayList<>();
+                    expectedEmailsList.add("primeiro@gmail.com");
+                    expectedEmailsList.add("segundo@gmail.com");
+
+                    for (String email : expectedEmailsList) {
+                        goToEditPersonPage(cpf);
+                        addingEmailToPerson(cpf, email);
+                    }
+
+                    List<String> emailsList = listOfRegisteredEmailsOfAPerson(cpf);
+
+                    assertEquals(emailsList, expectedEmailsList);
+                }
 
                 // should not list a person´s phone number just added more or less than once
             }
