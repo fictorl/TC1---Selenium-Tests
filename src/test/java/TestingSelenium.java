@@ -679,6 +679,31 @@ public class TestingSelenium{
                 String successedRegistration = nome + " adicionado com sucesso!";
                 verifyIfToastMessageIsDiferentThen(successedRegistration, driver);
             }
+            @Test
+            @DisplayName("Should not register a person with more than one identical email")
+            void shouldNotRegisterAPersonWithMoreThanOneIdenticalEmail() throws InterruptedException {
+                goToRegistrationPage();
+
+                String randomEmail = "abobrinha123@gmail.com";
+                String cpf = "321.654.987-10";
+                String nome = "Amiltom";
+
+                registerPerson(driver,
+                        cpf,
+                        nome,
+                        "Rua Ipanema",
+                        "999",
+                        "13568-826",
+                        "1111-11-11",
+                        "Vendedor Ambulante");
+
+                addingEmailToPerson(cpf, randomEmail);
+                addingEmailToPerson(cpf, randomEmail);
+                addingEmailToPerson(cpf, randomEmail);
+
+                String successedRegistration = nome + " adicionado com sucesso!";
+                verifyIfToastMessageIsDiferentThen(successedRegistration, driver);
+            }
         }
 
         @Nested
