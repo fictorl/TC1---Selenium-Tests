@@ -1117,7 +1117,6 @@ public class TestingSelenium{
 
                 WebElement searchButton = driver.findElement(By.xpath("//img[@alt='Imagem de pesquisa']"));
                 searchButton.click();
-
                 WebElement listOfPeopleButton = driver.findElement(By.tagName("nav")).findElements(By.tagName("a")).get(0);
                 listOfPeopleButton.click();
                 List<String> resultCpfSearch = listOfCPFsInTable();
