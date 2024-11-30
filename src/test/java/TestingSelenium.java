@@ -1,15 +1,17 @@
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.By;
-import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.WebDriverWait;
+
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 import java.util.function.Function;
 
@@ -51,6 +53,19 @@ public class TestingSelenium{
                     @Override
                     public Boolean apply(WebDriver driver) {
                         return title.equals(driver.getTitle());
+                    }
+                });
+    }
+
+    public void fluentWaiterCertainComponentById(WebDriver driver, String id) {
+        new FluentWait<>(driver)
+                .withTimeout(Duration.ofSeconds(10)) // tempo máximo de espera
+                .pollingEvery(Duration.ofMillis(700)) // frequência de verificação
+                .ignoring(Exception.class) // ignorar exceções durante a verificação
+                .until(new Function<WebDriver, Boolean>() {
+                    @Override
+                    public Boolean apply(WebDriver driver) {
+                        return driver.findElement(By.id(id)).isDisplayed();
                     }
                 });
     }
@@ -106,6 +121,204 @@ public class TestingSelenium{
         driver.findElement(By.id("iDataNasc")).sendKeys(dataNasc);
         driver.findElement(By.id("iProfissao")).sendKeys(profissao);
         driver.findElement(By.id("cadastrarPessoa")).click();
+    }
+
+    private void addingTelephoneNumberToPerson(String cpf, String phoneNumber) throws InterruptedException {
+        WebElement editButton = findPersonEditButton(cpf);
+
+        if (Objects.isNull(editButton)) fail("Person was not created before editing phone number");
+        editButton.click();
+
+        fluentWaiterCertainPage(driver, "Adicionar Pessoa");
+
+        WebElement addPhoneToPersonButton = driver.findElement(By.id("formCadastroPessoa"))
+                .findElements(By.tagName("button")).get(1);
+        addPhoneToPersonButton.click();
+
+        fluentWaiterCertainComponentById(driver, "formCadastrarTelefonePessoa");
+
+        driver.findElement(By.id("formCadastrarTelefonePessoa"))
+                .findElement(By.id("iTelefone")).sendKeys(phoneNumber);
+
+        driver.findElement(By.id("formCadastrarTelefonePessoa"))
+                .findElements(By.tagName("button")).get(1).click();
+
+        driver.findElement(By.id("cadastrarPessoa")).click();
+
+        goToMainPage();
+    }
+
+    private void goToEditPersonPage(String cpf) {
+        WebElement editButton = findPersonEditButton(cpf);
+
+        if (Objects.isNull(editButton)) fail("Person was not created before");
+        editButton.click();
+    }
+
+    private void addingEmailToPerson(String cpf, String email) throws InterruptedException {
+
+        fluentWaiterCertainPage(driver, "Adicionar Pessoa");
+
+        WebElement addEmailToPersonButton = driver.findElement(By.id("formCadastroPessoa"))
+                .findElements(By.tagName("button")).get(0);
+        addEmailToPersonButton.click();
+
+        fluentWaiterCertainComponentById(driver, "formCadastrarEmailPessoa");
+
+        driver.findElement(By.id("formCadastrarEmailPessoa"))
+                .findElement(By.id("iEmail")).sendKeys(email);
+
+        driver.findElement(By.id("formCadastrarEmailPessoa"))
+                .findElements(By.tagName("button")).get(1).click();
+
+        driver.findElement(By.id("cadastrarPessoa")).click();
+
+        goToMainPage();
+    }
+
+    private void addingPhoneToPerson(String cpf, String phone) throws InterruptedException {
+
+        fluentWaiterCertainPage(driver, "Adicionar Pessoa");
+
+        WebElement addPhoneToPersonButton = driver.findElement(By.id("formCadastroPessoa"))
+                .findElements(By.tagName("button")).get(1);
+        addPhoneToPersonButton.click();
+
+        fluentWaiterCertainComponentById(driver, "formCadastrarTelefonePessoa");
+
+        driver.findElement(By.id("formCadastrarTelefonePessoa"))
+                .findElement(By.id("iTelefone")).sendKeys(phone);
+
+        driver.findElement(By.id("formCadastrarTelefonePessoa"))
+                .findElements(By.tagName("button")).get(1).click();
+
+        driver.findElement(By.id("cadastrarPessoa")).click();
+
+        goToMainPage();
+    }
+
+    private void deletingCertainTelephoneNumberOfThePerson(String phoneNumber) {
+        List<WebElement> telephoneList = driver.findElement(By.id("formCadastroPessoa"))
+                .findElement(By.id("cadastroPessoaTelefones")).findElements(By.tagName("li"));
+
+        for (WebElement telephone : telephoneList) {
+            if (telephone.getText().equals(phoneNumber)) {
+                telephone.findElement(By.tagName("img")).click();
+                break;
+            }
+        }
+
+        driver.findElement(By.id("cadastrarPessoa")).click();
+    }
+
+    private void deletingCertainEmailOfThePerson(String email) {
+        List<WebElement> telephoneList = driver.findElement(By.id("formCadastroPessoa"))
+                .findElement(By.id("cadastroPessoaEmails")).findElements(By.tagName("li"));
+
+        for (WebElement telephone : telephoneList) {
+            if (telephone.getText().equals(email)) {
+                telephone.findElement(By.tagName("img")).click();
+                break;
+            }
+        }
+
+        driver.findElement(By.id("cadastrarPessoa")).click();
+    }
+
+    public void deletePerson(WebDriver driver, String cpf, List<WebElement> tableRows) {
+        fluentWaiterCertainPage(driver, "Pessoas");
+
+        WebElement personToDeleteRow = null;
+
+        for (WebElement row : tableRows) {
+            if (row.findElement(By.id(cpf)).isDisplayed()) personToDeleteRow = row;
+        }
+
+        personToDeleteRow.findElements(By.tagName("button")).get(1).click();
+    }
+
+    public boolean checkingIfPersonWasDeleted(WebDriver driver, String cpf, List<WebElement> tableRows) {
+        fluentWaiterCertainPage(driver, "Pessoas");
+        return tableRows.stream().noneMatch( row -> row.findElement(By.tagName("td")).getText() == cpf);
+    }
+
+    private WebElement findPersonEditButton(String cpf) {
+        WebElement tableBody = driver.findElement(By.tagName("tbody"));
+        List<WebElement> tableRows = tableBody.findElements(By.tagName("tr"));
+        WebElement personToEditRow = null;
+
+        for (WebElement row : tableRows) {
+            if (row.findElement(By.id(cpf)).isDisplayed()) personToEditRow = row;
+        }
+
+        if (personToEditRow == null) return null;
+
+        WebElement editButton = personToEditRow.findElements(By.id(cpf)).get(0);
+        return editButton;
+    }
+
+    private WebElement findPersonDeleteButton(String cpf) {
+        WebElement tableBody = driver.findElement(By.tagName("tbody"));
+        List<WebElement> tableRows = tableBody.findElements(By.tagName("tr"));
+        WebElement personToDeleteRow = null;
+
+        for (WebElement row : tableRows) {
+            if (row.findElement(By.id(cpf)).isDisplayed()) personToDeleteRow = row;
+        }
+
+        if (personToDeleteRow == null) return null;
+
+        WebElement deleteButton = personToDeleteRow.findElements(By.id(cpf)).get(1);
+        return deleteButton;
+    }
+
+    private List<String> listOfRegisteredCPFs() {
+        fluentWaiterCertainPage(driver, "Pessoas");
+        List<WebElement> listOfPeopleTableRows = driver.findElement(By.tagName("tbody"))
+                .findElements(By.tagName("tr"));
+
+        List<String> peopleList = new ArrayList<>();
+
+        for (WebElement row : listOfPeopleTableRows) {
+            peopleList.add(row.findElement(By.tagName("td")).getText());
+        }
+        return peopleList;
+    }
+
+    private List<String> listOfRegisteredEmailsOfAPerson(String cpf) {
+        fluentWaiterCertainPage(driver, "Pessoas");
+
+        goToEditPersonPage(cpf);
+
+        fluentWaiterCertainPage(driver, "Adicionar Pessoa");
+
+        List<WebElement> ListOfTagLiForEmails = driver.findElement(By.id("formCadastroPessoa"))
+                .findElement(By.id("cadastroPessoaEmails")).findElements(By.tagName("li"));
+
+        List<String> emailList = new ArrayList<>();
+
+        for (WebElement row : ListOfTagLiForEmails) {
+            emailList.add(row.getText());
+        }
+        return emailList;
+    }
+
+    private List<String> listOfRegisteredPhonesOfAPerson(String cpf) {
+        fluentWaiterCertainPage(driver, "Pessoas");
+
+        goToEditPersonPage(cpf);
+
+        fluentWaiterCertainPage(driver, "Adicionar Pessoa");
+
+        List<WebElement> ListOfTagLiForPhones = driver.findElement(By.id("formCadastroPessoa"))
+                .findElement(By.id("cadastroPessoaTelefones")).findElements(By.tagName("li"));
+
+        List<String> phonelList = new ArrayList<>();
+
+        for (WebElement row : ListOfTagLiForPhones) {
+            phonelList.add(row.getText());
+        }
+        return phonelList;
     }
 
     public static String generateRandomString(int length) {
@@ -572,6 +785,232 @@ public class TestingSelenium{
             }
 
         }
+
+        @Nested
+        @DisplayName("Deleting Tests")
+        class deletingTests{
+
+            // should not delite a person more than once
+            @Test
+            @DisplayName("Should not delete a person more than once")
+            void shouldNotDeleteAPersonMoreThanOnce() throws InterruptedException {
+                goToRegistrationPage();
+                String cpf = "123.456.789-01";
+                registerPerson(driver,
+                        cpf,
+                        "Maria Joseeeé",
+                        "Rua das Flores",
+                        "123",
+                        "12345-678",
+                        "2000-12-31",
+                        "Engenheiro");
+                goToMainPage();
+
+                WebElement personDeleteButton = findPersonDeleteButton(cpf);
+                if (personDeleteButton != null) personDeleteButton.click();
+
+                WebElement refreshPersonDeleteButton = findPersonDeleteButton(cpf);
+
+                assertTrue(refreshPersonDeleteButton == null);
+            }
+
+            @Test
+            @DisplayName("Should not delete the same person´s phone number more than once")
+            void shouldNotDeleteTheSamePersonSPhoneNumberMoreThanOnce() throws InterruptedException {
+                goToRegistrationPage();
+
+                String cpf = "123.456.789-01";
+                registerPerson(driver,
+                        cpf,
+                        "Maria Joseeeé",
+                        "Rua das Flores",
+                        "123",
+                        "12345-678",
+                        "2000-12-31",
+                        "Engenheiro");
+                goToMainPage();
+
+                String phoneNumber = "(19) 9999-8888";
+
+                addingTelephoneNumberToPerson(cpf, phoneNumber);
+                WebElement editButton = findPersonEditButton(cpf);
+                editButton.click();
+
+                fluentWaiterCertainPage(driver,"Adicionar Pessoa");
+                List<String> firstPhonesList = driver.findElement(By.id("formCadastroPessoa"))
+                        .findElements(By.tagName("ol")).get(1).findElements(By.tagName("li"))
+                        .stream().map( item -> item.getText().toString()).toList();
+
+                System.out.print(firstPhonesList);
+
+                //deletar telefone
+
+                deletingCertainTelephoneNumberOfThePerson(phoneNumber);
+
+                goToMainPage();
+                editButton = findPersonEditButton(cpf);
+                editButton.click();
+
+                fluentWaiterCertainPage(driver,"Adicionar Pessoa");
+                List<String> secondPhonesList = driver.findElement(By.id("formCadastroPessoa"))
+                        .findElements(By.tagName("ol")).get(1).findElements(By.tagName("li"))
+                        .stream().map( item -> item.getText().toString()).toList();
+
+                assertEquals(secondPhonesList.getFirst(), "Nenhum telefone cadastrado!");
+            }
+
+            @Test
+            @DisplayName("Should not delete the same person´s email more than once")
+            void shouldNotDeleteTheSamePersonSEmailMoreThanOnce() throws InterruptedException {
+                goToRegistrationPage();
+
+                String cpf = "123.456.789-01";
+                registerPerson(driver,
+                        cpf,
+                        "Maria Joseeeé",
+                        "Rua das Flores",
+                        "123",
+                        "12345-678",
+                        "2000-12-31",
+                        "Engenheiro");
+                goToMainPage();
+
+                String email = "maria@gmail.com";
+
+                goToEditPersonPage(cpf);
+                addingEmailToPerson(cpf, email);
+                WebElement editButton = findPersonEditButton(cpf);
+                editButton.click();
+
+                fluentWaiterCertainPage(driver,"Adicionar Pessoa");
+
+                //deletar email
+                deletingCertainEmailOfThePerson(email);
+
+                goToMainPage();
+                editButton = findPersonEditButton(cpf);
+                editButton.click();
+
+                fluentWaiterCertainPage(driver,"Adicionar Pessoa");
+                List<String> secondPhonesList = driver.findElement(By.id("formCadastroPessoa"))
+                        .findElements(By.tagName("ol")).get(0).findElements(By.tagName("li"))
+                        .stream().map( item -> item.getText().toString()).toList();
+
+                assertEquals(secondPhonesList.getFirst(), "Nenhum email cadastrado!");
+            }
+
+        }
+
+        @Nested
+        @DisplayName("Listing Tests")
+        class listingTests{
+
+            @Nested
+            @DisplayName("after creating operations")
+            class afterCreationOperations {
+
+                @Test
+                @DisplayName("Should list all people just added")
+                void shouldNotListAPersonJustAddedMoreOrLessThanOnce() {
+                goToRegistrationPage();
+
+                List<String> expectedCPFsList = new ArrayList<>();
+                expectedCPFsList.add("123.456.789-01");
+                expectedCPFsList.add("123.456.789-02");
+
+                    for (String cpf : expectedCPFsList) {
+                        registerPerson(driver,
+                                cpf,
+                                "Maria Joseeeé",
+                                "Rua das Flores",
+                                "123",
+                                "12345-678",
+                                "2000-12-31",
+                                "Engenheiro");
+                    }
+
+                goToMainPage();
+
+                List<String> CPFsList = listOfRegisteredCPFs();
+
+                assertEquals(CPFsList, expectedCPFsList);
+            }
+
+                // should not list a person´s email just added more or less than once
+                @Test
+                @DisplayName("Should list all email just added to a person")
+                void shouldListAllEmailJustAddedToAPerson() throws InterruptedException {
+                    goToRegistrationPage();
+
+                    String cpf = "123.456.789-01";
+                    registerPerson(driver,
+                            cpf,
+                            "Maria Joseeeé",
+                            "Rua das Flores",
+                            "123",
+                            "12345-678",
+                            "2000-12-31",
+                            "Engenheiro");
+                    goToMainPage();
+
+                    List<String> expectedEmailsList = new ArrayList<>();
+                    expectedEmailsList.add("primeiro@gmail.com");
+                    expectedEmailsList.add("segundo@gmail.com");
+
+                    for (String email : expectedEmailsList) {
+                        goToEditPersonPage(cpf);
+                        addingEmailToPerson(cpf, email);
+                    }
+
+                    List<String> emailsList = listOfRegisteredEmailsOfAPerson(cpf);
+
+                    assertEquals(emailsList, expectedEmailsList);
+                }
+
+                // should not list a person´s phone number just added more or less than once
+                @Test
+                @DisplayName("Should list all phone number just added to a person")
+                void shoulListAllPhoneNumberJustAddedToAPerson() throws InterruptedException {
+                    goToRegistrationPage();
+
+                    String cpf = "123.456.789-01";
+                    registerPerson(driver,
+                            cpf,
+                            "Maria Joseeeé",
+                            "Rua das Flores",
+                            "123",
+                            "12345-678",
+                            "2000-12-31",
+                            "Engenheiro");
+                    goToMainPage();
+
+                    List<String> expectedPhonesList = new ArrayList<>();
+                    expectedPhonesList.add("(19) 8888-8888");
+                    expectedPhonesList.add("(19) 9999-9999");
+
+                    for (String phone : expectedPhonesList) {
+                        goToEditPersonPage(cpf);
+                        addingPhoneToPerson(cpf, phone);
+                    }
+
+                    List<String> phonesList = listOfRegisteredPhonesOfAPerson(cpf);
+
+                    assertEquals(phonesList, expectedPhonesList);
+                }
+            }
+
+            @Nested
+            @DisplayName("after deleting operations")
+            class afterDeletionOperation{
+
+                // should not list a person just deleted
+
+                // should not list a person´s email just deleted
+
+                // should not list a person´s phone number just deleted
+            }
+
+        }
     }
 
     @Nested
@@ -711,7 +1150,7 @@ public class TestingSelenium{
                 assertFalse(telefoneFound, "O telefone '+55 16 99133-1123' foi adicionado, mas deveria ter sido cancelado.");
             }
             @Test
-            @DisplayName("Should navigate to email and including it")
+            @DisplayName("Should navigate to telefone and including it")
             void shouldNavigateToTelefoneAndIncludingIt() {
                 goToRegistrationPage();
 
