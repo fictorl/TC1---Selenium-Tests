@@ -705,11 +705,30 @@ public class TestingSelenium{
                 WebElement cancelButton = driver.findElement(By.xpath("//*[@id=\"formCadastrarTelefonePessoa\"]/footer/button[1]"));
                 cancelButton.click();
 
-                List<WebElement> telefoneList = driver.findElements(By.xpath("//*[@id='cadastroPessoaEmails']/li"));
-                boolean emailFound = telefoneList.stream()
-                        .anyMatch(email -> email.getText().equals("+55 16 99133-1123"));
+                List<WebElement> telefoneList = driver.findElements(By.xpath("//*[@id=\"cadastroPessoaTelefones\"]/li"));
+                boolean telefoneFound = telefoneList.stream()
+                        .anyMatch(telefone -> telefone.getText().equals("+55 16 99133-1123"));
+                assertFalse(telefoneFound, "O telefone '+55 16 99133-1123' foi adicionado, mas deveria ter sido cancelado.");
+            }
+            @Test
+            @DisplayName("Should navigate to email and including it")
+            void shouldNavigateToTelefoneAndIncludingIt() {
+                goToRegistrationPage();
 
-                assertFalse(emailFound, "O telefone '+55 16 99133-1123' foi adicionado, mas deveria ter sido cancelado.");
+                WebElement addTelefoneElement = driver.findElement(By.xpath("//*[@id=\"formCadastroPessoa\"]/div[2]/button"));
+                addTelefoneElement.click();
+                WebElement telefoneField = driver.findElement(By.id("iTelefone"));
+                telefoneField.sendKeys("+55 16 99133-1123");
+                WebElement registrationButton = driver.findElement(By.xpath("//*[@id=\"formCadastrarTelefonePessoa\"]/footer/button[2]"));
+                registrationButton.click();
+                WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+                wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//*[@id=\"cadastroPessoaTelefones\"]/li[contains(text(), '+55 16 99133-1123')]")));
+                List<WebElement> TelefoneList = driver.findElements(By.xpath("//*[@id=\"cadastroPessoaTelefones\"]/li"));
+                boolean telefoneFound = TelefoneList.stream()
+                        .anyMatch(telefone -> telefone.getText().equals("+55 16 99133-1123"));
+
+                assertTrue(telefoneFound, "O Telefone '+55 16 99133-1123' não foi encontrado na lista.");
             }
         }
     }
