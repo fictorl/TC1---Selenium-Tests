@@ -798,6 +798,37 @@ public class TestingSelenium{
 
                 Assertions.assertNotEquals(futureDate, displayedBirthDate, "A data de nascimento não deve ser editada para uma data futura!");
             }
+
+            @Test
+            @DisplayName("Should not allow editing with invalid email format")
+
+            void shouldNotAllowEditingWithInvalidEmailFormat()throws InterruptedException {
+
+                goToRegistrationPage();
+
+                String cpf = "123.456.789-02";
+                String nome = "Joana Lowaska";
+                registerPerson(driver,
+                        cpf,
+                        nome,
+                        "Rua das Flores",
+                        "123",
+                        "12345-678",
+                        "2000-12-31",
+                        "Desenvolvedora de software");
+
+                goToMainPage();
+                WebElement editButton = driver.findElement(By.id(cpf));
+                editButton.click();
+                fluentWaiterCertainPage(driver, "Adicionar Pessoa");
+
+                String emailIncorrectFormat = "ariadne#.";
+                addingEmailToPerson(cpf, emailIncorrectFormat);
+
+                String successedRegistration = nome + " editado com sucesso!";
+                verifyIfToastMessageIsDiferentThen(successedRegistration, driver);
+
+            }
         }
 
         @Nested
