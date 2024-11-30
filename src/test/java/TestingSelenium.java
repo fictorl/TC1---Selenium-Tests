@@ -687,6 +687,54 @@ public class TestingSelenium{
                 assertTrue(refreshPersonDeleteButton == null);
             }
 
+            @Test
+            @DisplayName("Should not delete the same person´s phone number more than once")
+            void shouldNotDeleteTheSamePersonSPhoneNumberMoreThanOnce() throws InterruptedException {
+                goToRegistrationPage();
+
+                String cpf = "123.456.789-01";
+                registerPerson(driver,
+                        cpf,
+                        "Maria Joseeeé",
+                        "Rua das Flores",
+                        "123",
+                        "12345-678",
+                        "2000-12-31",
+                        "Engenheiro");
+                goToMainPage();
+
+                String phoneNumber = "(19) 9999-8888";
+
+                addingTelephoneNumberToPerson(cpf, phoneNumber);
+                WebElement editButton = findPersonEditButton(cpf);
+                editButton.click();
+
+                fluentWaiterCertainPage(driver,"Adicionar Pessoa");
+                List<String> firstPhonesList = driver.findElement(By.id("formCadastroPessoa"))
+                        .findElements(By.tagName("ol")).get(1).findElements(By.tagName("li"))
+                        .stream().map( item -> item.getText().toString()).toList();
+
+                System.out.print(firstPhonesList);
+
+                //deletar telefone
+                WebElement phoneToDeleteButton = driver.findElement(By.id("formCadastroPessoa"))
+                        .findElement(By.id("cadastroPessoaTelefones")).findElement(By.tagName("li"))
+                        .findElement(By.tagName("img"));
+                phoneToDeleteButton.click();
+                driver.findElement(By.id("cadastrarPessoa")).click();
+
+                goToMainPage();
+                editButton = findPersonEditButton(cpf);
+                editButton.click();
+
+                fluentWaiterCertainPage(driver,"Adicionar Pessoa");
+                List<String> secondPhonesList = driver.findElement(By.id("formCadastroPessoa"))
+                        .findElements(By.tagName("ol")).get(1).findElements(By.tagName("li"))
+                        .stream().map( item -> item.getText().toString()).toList();
+
+                assertEquals(secondPhonesList.getFirst(), "Nenhum telefone cadastrado!");
+            }
+
             // should not delete the same person´s email more than once
 
         }
