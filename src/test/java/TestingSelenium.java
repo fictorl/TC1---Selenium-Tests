@@ -655,6 +655,29 @@ public class TestingSelenium{
                 String successedRegistration = "Formato de Nome inválido!";
                 verifyIfToastMessageIsDiferentThen(successedRegistration, driver);
             }
+            @Test
+            @DisplayName("Should not register a person with email in wrong format")
+            void shouldNotRegisterAPersonWithEmailInWrongFormat() throws InterruptedException {
+                goToRegistrationPage();
+
+                String randomEmail = generateRandomString(150);
+                String cpf = "321.654.987-10";
+                String nome = "Ana violinista";
+
+                registerPerson(driver,
+                        cpf,
+                        nome,
+                        "Rua Copacabana",
+                        "171",
+                        "13568-826",
+                        "1111-11-11",
+                        "Baixista");
+
+                addingEmailToPerson(cpf, randomEmail);
+
+                String successedRegistration = nome + " adicionado com sucesso!";
+                verifyIfToastMessageIsDiferentThen(successedRegistration, driver);
+            }
         }
 
         @Nested
