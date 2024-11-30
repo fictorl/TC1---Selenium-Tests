@@ -976,7 +976,23 @@ public class TestingSelenium{
 
                 assertTrue(emailFound, "O email 'marujo@gmail.com' não foi encontrado na lista.");
             }
+            @Test
+            @DisplayName("Should navigate to telefone inclusion and cancel")
+            void shouldNavigateToTelefoneInclusionAndCancel() {
+                goToRegistrationPage();
+                WebElement addTelefoneElement = driver.findElement(By.xpath("//*[@id=\"formCadastroPessoa\"]/div[2]/button"));
+                addTelefoneElement.click();
+                WebElement telefoneField = driver.findElement(By.id("iTelefone"));
+                telefoneField.sendKeys("+55 16 99133-1123");
+                WebElement cancelButton = driver.findElement(By.xpath("//*[@id=\"formCadastrarTelefonePessoa\"]/footer/button[1]"));
+                cancelButton.click();
 
+                List<WebElement> telefoneList = driver.findElements(By.xpath("//*[@id='cadastroPessoaEmails']/li"));
+                boolean emailFound = telefoneList.stream()
+                        .anyMatch(email -> email.getText().equals("+55 16 99133-1123"));
+
+                assertFalse(emailFound, "O telefone '+55 16 99133-1123' foi adicionado, mas deveria ter sido cancelado.");
+            }
         }
     }
 }
