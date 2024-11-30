@@ -891,6 +891,40 @@ public class TestingSelenium{
                 assertEquals(secondPhonesList.getFirst(), "Nenhum email cadastrado!");
             }
 
+            @Test
+            @DisplayName("Should not list a person just deleted")
+            void shouldNotListAPersonJustDeleted() throws InterruptedException {
+                goToRegistrationPage();
+
+                String cpf1 = "123.456.789-01";
+                String cpf2 = "123.456.789-02";
+
+                List<String> expectedCPFsList = new ArrayList<>();
+                expectedCPFsList.add(cpf1);
+                expectedCPFsList.add(cpf2);
+
+                for (String cpf : expectedCPFsList) {
+                    registerPerson(driver,
+                            cpf,
+                            "Maria Joseeeé",
+                            "Rua das Flores",
+                            "123",
+                            "12345-678",
+                            "2000-12-31",
+                            "Engenheiro");
+                }
+
+                goToMainPage();
+
+                List<WebElement> tableRows = driver.findElement(By.tagName("tbody"))
+                        .findElements(By.tagName("tr"));
+
+                deletePerson(driver, cpf1, tableRows);
+
+                List<String> actualRegisteredPeople = listOfCPFsInTable();
+                assertFalse(actualRegisteredPeople.stream().anyMatch(cpf -> cpf.equals(cpf1)));
+            }
+
         }
 
         @Nested
