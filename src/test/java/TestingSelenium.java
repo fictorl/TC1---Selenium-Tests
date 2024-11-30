@@ -11,10 +11,7 @@ import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Random;
+import java.util.*;
 import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -1092,6 +1089,40 @@ public class TestingSelenium{
 
                 String newTitle = driver.getTitle();
                 assertFalse(title.equals(newTitle));
+            }
+
+            @Test
+            @DisplayName("Should list all registered people when the button is clicked")
+            void shouldListAllRegisteredPeopleWhenButtonClicked() {
+
+                goToRegistrationPage();
+
+                String cpf1 = "123.456.789-60";
+                String nome1 = "Analu";
+                String cpf2 = "123.456.789-62";
+                String nome2 = "Anali";
+                String cpf3 = "123.456.789-70";
+                String nome3 = "Analo";
+
+                List<String> cpfList = new ArrayList<>(Arrays.asList(cpf1, cpf2, cpf3));
+                List<String> nomeList = new ArrayList<>(Arrays.asList(nome1, nome2, nome3));
+
+                for (int i = 0; i < cpfList.size(); i++) {
+                    registerPerson(driver, cpfList.get(i), nomeList.get(i), "Rua das Margaridas", "321", "12345-689", "2000-12-31", "Analista de Sistemas" );
+                }
+
+                goToMainPage();
+                WebElement cpfField = driver.findElement(By.id("iPesquisa"));
+                cpfField.sendKeys("123.456.789-62");
+
+                WebElement searchButton = driver.findElement(By.xpath("//img[@alt='Imagem de pesquisa']"));
+                searchButton.click();
+
+                WebElement listOfPeopleButton = driver.findElement(By.tagName("nav")).findElements(By.tagName("a")).get(0);
+                listOfPeopleButton.click();
+                List<String> resultCpfSearch = listOfCPFsInTable();
+
+                assertTrue(cpfList.equals(resultCpfSearch));
             }
         }
         @Nested
