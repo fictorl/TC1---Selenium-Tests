@@ -827,6 +827,36 @@ public class TestingSelenium{
 
                 String successedRegistration = nome + " editado com sucesso!";
                 verifyIfToastMessageIsDiferentThen(successedRegistration, driver);
+            }
+
+            @Test
+            @DisplayName("Should not allow editing with invalid telefone format")
+
+            void shouldNotAllowEditingWithInvalidTelefoneFormat()throws InterruptedException {
+
+                goToRegistrationPage();
+
+                String cpf = "123.456.789-02";
+                String nome = "Joana Lowaska";
+                registerPerson(driver,
+                        cpf,
+                        nome,
+                        "Rua das Flores",
+                        "123",
+                        "12345-678",
+                        "2000-12-31",
+                        "Desenvolvedora de software");
+
+                goToMainPage();
+                WebElement editButton = driver.findElement(By.id(cpf));
+                editButton.click();
+                fluentWaiterCertainPage(driver, "Adicionar Pessoa");
+
+                String telefoneIncorrectFormat = "letras";
+                addingEmailToPerson(cpf, telefoneIncorrectFormat);
+
+                String successedRegistration = nome + " editado com sucesso!";
+                verifyIfToastMessageIsDiferentThen(successedRegistration, driver);
 
             }
         }
