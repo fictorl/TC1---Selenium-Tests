@@ -125,7 +125,7 @@ public class TestingSelenium{
     private void addingTelephoneNumberToPerson(String cpf, String phoneNumber) throws InterruptedException {
         WebElement editButton = findPersonEditButton(cpf);
 
-        if (Objects.isNull(editButton)) Assertions.fail("Person was not created before editing phone number");
+        if (Objects.isNull(editButton)) fail("Person was not created before editing phone number");
         editButton.click();
 
         fluentWaiterCertainPage(driver, "Adicionar Pessoa");
@@ -147,6 +147,31 @@ public class TestingSelenium{
         goToMainPage();
     }
 
+    private void addingEmailToPerson(String cpf, String email) throws InterruptedException {
+        WebElement editButton = findPersonEditButton(cpf);
+
+        if (Objects.isNull(editButton)) fail("Person was not created before editing phone number");
+        editButton.click();
+
+        fluentWaiterCertainPage(driver, "Adicionar Pessoa");
+
+        WebElement addEmailToPersonButton = driver.findElement(By.id("formCadastroPessoa"))
+                .findElements(By.tagName("button")).get(0);
+        addEmailToPersonButton.click();
+
+        fluentWaiterCertainComponentById(driver, "formCadastrarEmailPessoa");
+
+        driver.findElement(By.id("formCadastrarEmailPessoa"))
+                .findElement(By.id("iEmail")).sendKeys(email);
+
+        driver.findElement(By.id("formCadastrarEmailPessoa"))
+                .findElements(By.tagName("button")).get(1).click();
+
+        driver.findElement(By.id("cadastrarPessoa")).click();
+
+        goToMainPage();
+    }
+
 
     private void deletingCertainTelephoneNumberOfThePerson(String phoneNumber) {
         List<WebElement> telephoneList = driver.findElement(By.id("formCadastroPessoa"))
@@ -154,6 +179,20 @@ public class TestingSelenium{
 
         for (WebElement telephone : telephoneList) {
             if (telephone.getText().equals(phoneNumber)) {
+                telephone.findElement(By.tagName("img")).click();
+                break;
+            }
+        }
+
+        driver.findElement(By.id("cadastrarPessoa")).click();
+    }
+
+    private void deletingCertainEmailOfThePerson(String email) {
+        List<WebElement> telephoneList = driver.findElement(By.id("formCadastroPessoa"))
+                .findElement(By.id("cadastroPessoaEmails")).findElements(By.tagName("li"));
+
+        for (WebElement telephone : telephoneList) {
+            if (telephone.getText().equals(email)) {
                 telephone.findElement(By.tagName("img")).click();
                 break;
             }
@@ -747,7 +786,44 @@ public class TestingSelenium{
                 assertEquals(secondPhonesList.getFirst(), "Nenhum telefone cadastrado!");
             }
 
-            // should not delete the same person´s email more than once
+            @Test
+            @DisplayName("Should not delete the same person´s email more than once")
+            void shouldNotDeleteTheSamePersonSEmailMoreThanOnce() throws InterruptedException {
+                goToRegistrationPage();
+
+                String cpf = "123.456.789-01";
+                registerPerson(driver,
+                        cpf,
+                        "Maria Joseeeé",
+                        "Rua das Flores",
+                        "123",
+                        "12345-678",
+                        "2000-12-31",
+                        "Engenheiro");
+                goToMainPage();
+
+                String email = "maria@gmail.com";
+
+                addingEmailToPerson(cpf, email);
+                WebElement editButton = findPersonEditButton(cpf);
+                editButton.click();
+
+                fluentWaiterCertainPage(driver,"Adicionar Pessoa");
+
+                //deletar email
+                deletingCertainEmailOfThePerson(email);
+
+                goToMainPage();
+                editButton = findPersonEditButton(cpf);
+                editButton.click();
+
+                fluentWaiterCertainPage(driver,"Adicionar Pessoa");
+                List<String> secondPhonesList = driver.findElement(By.id("formCadastroPessoa"))
+                        .findElements(By.tagName("ol")).get(0).findElements(By.tagName("li"))
+                        .stream().map( item -> item.getText().toString()).toList();
+
+                assertEquals(secondPhonesList.getFirst(), "Nenhum email cadastrado!");
+            }
 
         }
 
