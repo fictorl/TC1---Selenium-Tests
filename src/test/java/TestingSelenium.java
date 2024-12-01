@@ -45,7 +45,7 @@ public class TestingSelenium{
 
     public void fluentWaiterCertainPage(WebDriver driver, String title) {
         new FluentWait<>(driver)
-                .withTimeout(Duration.ofSeconds(10)) // tempo máximo de espera
+                .withTimeout(Duration.ofSeconds(5)) // tempo máximo de espera
                 .pollingEvery(Duration.ofMillis(700)) // frequência de verificação
                 .ignoring(Exception.class) // ignorar exceções durante a verificação
                 .until(new Function<WebDriver, Boolean>() {
@@ -58,7 +58,7 @@ public class TestingSelenium{
 
     public void fluentWaiterCertainComponentById(WebDriver driver, String id) {
         new FluentWait<>(driver)
-                .withTimeout(Duration.ofSeconds(10)) // tempo máximo de espera
+                .withTimeout(Duration.ofSeconds(5)) // tempo máximo de espera
                 .pollingEvery(Duration.ofMillis(700)) // frequência de verificação
                 .ignoring(Exception.class) // ignorar exceções durante a verificação
                 .until(new Function<WebDriver, Boolean>() {
@@ -72,7 +72,7 @@ public class TestingSelenium{
     public void verifyToastMessage(WebDriver driver, String expectedMessage) {
         // Aguarda até que o toast apareça
         WebElement toast = new FluentWait<>(driver)
-                .withTimeout(Duration.ofSeconds(10)) // tempo máximo de espera
+                .withTimeout(Duration.ofSeconds(5)) // tempo máximo de espera
                 .pollingEvery(Duration.ofMillis(700)) // frequência de verificação
                 .ignoring(Exception.class) // ignora exceções durante a verificação
                 .until(new Function<WebDriver, WebElement>() {
@@ -95,7 +95,7 @@ public class TestingSelenium{
 
     public void verifyIfToastMessageIsDiferentThen(String stringNotExpected, WebDriver driver) {
         WebElement toast = new FluentWait<>(driver)
-                .withTimeout(Duration.ofSeconds(10))
+                .withTimeout(Duration.ofSeconds(5))
                 .pollingEvery(Duration.ofMillis(700))
                 .ignoring(Exception.class)
                 .until(new Function<WebDriver, WebElement>() {
@@ -361,7 +361,9 @@ public class TestingSelenium{
     @Nested
     @DisplayName("Inputs tests")
     class InputsTests {
-        
+
+        List<String> validInputFieldValues = List.of("Preencha este campo.", "Please fill out this field.");
+
         @Nested
         @DisplayName("CPF input tests")
         class cpfInputTests{
@@ -397,10 +399,10 @@ public class TestingSelenium{
                         "Engenheiro" );
                 String expectedMessage = name + " adicionado com sucesso!";
                 verifyToastMessage(driver, expectedMessage);
-            }        
+            }
         }
 
-        
+
 
 
         @Nested
@@ -438,8 +440,9 @@ public class TestingSelenium{
                         "" );
                 WebElement nomeField = driver.findElement(By.id("iProfissao"));
                 String validationMessage = nomeField.getAttribute("validationMessage");
-                assertEquals("Preencha este campo.", validationMessage, "O campo 'Nome' deve exibir a mensagem 'Preencha este campo'.");
-            }        
+                assertTrue(validInputFieldValues.contains(validationMessage),
+                        "O campo 'Profissao' deve exibir a mensagem 'Preencha este campo.' ou 'Please fill out this field.'");
+            }
         }
 
         @Nested
@@ -461,10 +464,10 @@ public class TestingSelenium{
 
                 WebElement nomeField = driver.findElement(By.id("iNome"));
                 String validationMessage = nomeField.getAttribute("validationMessage");
-                assertEquals("Preencha este campo.", validationMessage, "O campo 'Nome' deve exibir a mensagem 'Preencha este campo'.");
-            }        
+                assertTrue(validInputFieldValues.contains(validationMessage),
+                        "O campo 'Nome' deve exibir a mensagem 'Preencha este campo.' ou 'Please fill out this field.'");            }
         }
-        
+
 
         @Nested
         @DisplayName("Tests Rua input")
@@ -485,10 +488,10 @@ public class TestingSelenium{
 
                 WebElement ruaField = driver.findElement(By.id("iRua"));
                 String validationMessage = ruaField.getAttribute("validationMessage");
-                assertEquals("Preencha este campo.", validationMessage, "O campo 'Rua' deve exibir a mensagem 'Preencha este campo'.");
-            }        
+                assertTrue(validInputFieldValues.contains(validationMessage),
+                        "O campo 'Rua' deve exibir a mensagem 'Preencha este campo.' ou 'Please fill out this field.'");            }
         }
-        
+
 
         @Nested
         @DisplayName("Tests Numero input")
@@ -510,8 +513,8 @@ public class TestingSelenium{
 
                 WebElement numeroField = driver.findElement(By.id("iNumero"));
                 String validationMessage = numeroField.getAttribute("validationMessage");
-                assertEquals("Preencha este campo.", validationMessage, "O campo 'Número' deve exibir a mensagem 'Preencha este campo'.");
-            }
+                assertTrue(validInputFieldValues.contains(validationMessage),
+                        "O campo 'Numero' deve exibir a mensagem 'Preencha este campo.' ou 'Please fill out this field.'");            }
         }
 
         @Nested
@@ -533,8 +536,8 @@ public class TestingSelenium{
 
                     WebElement CEPField = driver.findElement(By.id("iCEP"));
                     String validationMessage = CEPField.getAttribute("validationMessage");
-                    assertEquals("Preencha este campo.", validationMessage, "O campo 'CEP' deve exibir 'Preencha este campo'.");
-                }
+                assertTrue(validInputFieldValues.contains(validationMessage),
+                        "O campo 'CEP' deve exibir a mensagem 'Preencha este campo.' ou 'Please fill out this field.'");                }
 
             @Test
             @DisplayName("Should not submit form if the CEP field is in wrong format")
@@ -575,8 +578,8 @@ public class TestingSelenium{
 
                 WebElement data = driver.findElement(By.id("iDataNasc"));
                 String validationMessage = data.getAttribute("validationMessage");
-                assertEquals("Preencha este campo.", validationMessage, "O campo 'Data de Nascimento' deve exibir 'Preencha este campo'.");
-            }
+                assertTrue(validInputFieldValues.contains(validationMessage),
+                        "O campo 'Data de Nascimento' deve exibir a mensagem 'Preencha este campo.' ou 'Please fill out this field.'");            }
             @Test
             @DisplayName("Should not submit form if date field is in wrong format")
             void shouldNotSubmitFormIfTheDateFieldIsInWrongFormat(){
@@ -595,8 +598,8 @@ public class TestingSelenium{
 
                 WebElement data = driver.findElement(By.id("iDataNasc"));
                 String validationMessage = data.getAttribute("validationMessage");
-                assertEquals("Preencha este campo.", validationMessage, "O campo 'Data de Nascimento' deve exibir 'Preencha este campo'.");
-            }
+                assertTrue(validInputFieldValues.contains(validationMessage),
+                        "O campo 'Data de Nascimento' deve exibir a mensagem 'Preencha este campo.' ou 'Please fill out this field.'");            }
         }
     }
 
@@ -1522,5 +1525,6 @@ public class TestingSelenium{
             }
         }
     }
+
 }
 
