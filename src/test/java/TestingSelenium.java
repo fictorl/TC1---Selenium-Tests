@@ -541,17 +541,18 @@ public class TestingSelenium{
             void shouldNotSubmitFormIfTheCEPFieldIsInWrongFormat(){
                 goToRegistrationPage();
                 String randomCEP = generateRandomString(20);
+                String nome = "Marcao Pescador";
 
                 registerPerson(driver,
                         "123.456.789-01",
-                        "Marcao Pescador",
+                        nome,
                         "Rua Eugenio Franco",
                         "283",
                         randomCEP,
                         "1970-12-06",
                         "Pedreiro");
 
-                String successedRegistration = "Formato de CEP inválido!";
+                String successedRegistration = nome + " adicionado com sucesso!";
                 verifyIfToastMessageIsDiferentThen(successedRegistration, driver);
             }
         }
@@ -572,8 +573,8 @@ public class TestingSelenium{
                         "",
                         "Dragueiro");
 
-                WebElement CEPField = driver.findElement(By.id("iDataNasc"));
-                String validationMessage = CEPField.getAttribute("validationMessage");
+                WebElement data = driver.findElement(By.id("iDataNasc"));
+                String validationMessage = data.getAttribute("validationMessage");
                 assertEquals("Preencha este campo.", validationMessage, "O campo 'Data de Nascimento' deve exibir 'Preencha este campo'.");
             }
             @Test
@@ -581,18 +582,20 @@ public class TestingSelenium{
             void shouldNotSubmitFormIfTheDateFieldIsInWrongFormat(){
                 goToRegistrationPage();
                 String randomDataNasc = generateRandomString(20);
+                String nome = "Carlos Caminhoneiro";
 
                 registerPerson(driver,
                         "321.654.987-10",
-                        "Carlos Caminhoneiro",
+                        nome,
                         "Rua Eurides Faria",
                         "666",
                         "13568-826",
                         randomDataNasc,
                         "Dragueiro");
 
-                String successedRegistration = "Formato de Data inválido!";
-                verifyIfToastMessageIsDiferentThen(successedRegistration, driver);
+                WebElement data = driver.findElement(By.id("iDataNasc"));
+                String validationMessage = data.getAttribute("validationMessage");
+                assertEquals("Preencha este campo.", validationMessage, "O campo 'Data de Nascimento' deve exibir 'Preencha este campo'.");
             }
         }
     }
@@ -651,7 +654,7 @@ public class TestingSelenium{
                         "1111-11-11",
                         "Piscineiro");
 
-                String successedRegistration = "Formato de Nome inválido!";
+                String successedRegistration = randomName + " adicionado com sucesso!";
                 verifyIfToastMessageIsDiferentThen(successedRegistration, driver);
             }
             @Test
@@ -732,7 +735,7 @@ public class TestingSelenium{
                 verifyIfToastMessageIsDiferentThen(successedRegistration, driver);
             }
             @Test
-            @DisplayName("Should not register a person with Telefone in wrong format")
+            @DisplayName("Should not register a person with more than one identical telefone")
             void shouldNotRegisterAPersonWithMoreThanOneIdenticalTelefone() {
                 goToRegistrationPage();
 
