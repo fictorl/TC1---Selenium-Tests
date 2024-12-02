@@ -357,12 +357,11 @@ public class TestingSelenium{
         driver.quit();
     }
 
+    List<String> validInputFieldValues = List.of("Preencha este campo.", "Please fill out this field.");
 
     @Nested
     @DisplayName("Inputs tests")
     class InputsTests {
-
-        List<String> validInputFieldValues = List.of("Preencha este campo.", "Please fill out this field.");
 
         @Nested
         @DisplayName("CPF input tests")
@@ -830,7 +829,8 @@ public class TestingSelenium{
                 nomeField.clear();
                 driver.findElement(By.id("cadastrarPessoa")).click();
                 String nomeValidationMessage = nomeField.getAttribute("validationMessage");
-                assertEquals("Preencha este campo.", nomeValidationMessage, "O campo" +  inputName + "deve exibir a mensagem 'Preencha este campo'.");
+                assertTrue(validInputFieldValues.contains(nomeValidationMessage),
+                        "O campo 'Profissao' deve exibir a mensagem 'Preencha este campo.' ou 'Please fill out this field.'");
             }
 
             @Test
